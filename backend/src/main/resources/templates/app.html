@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title layout:title-pattern="${CONTENT_TITLE}"></title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/node_modules/bootstrap/dist/css/bootstrap.min.css}" type="text/css">
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+    <script th:src="@{/js/main.js}" type="application/javascript"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script th:src="@{/node_modules/bootstrap/dist/js/bootstrap.min.js}"></script>
+    <script th:src="@{/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js}"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+</head>
+<body>
+<!-- ======= Phần Header ======= -->
+<div th:insert="~{layout/header :: header}"></div>
+<!-- ======= Phần Sidebar ======= -->
+<div th:insert="~{layout/aside :: aside}"></div>
+<!-- ======= Phần Main ======= -->
+<main class="main" id="main">
+    <header layout:fragment="custom-header" class="pagetitle"></header>
+    <div layout:fragment="custom-message">
+        <div th:if="${param.success}"
+             class="alert alert-success bg-success text-light border-0 alert-dismissible fade show" role="alert">
+            You are registered successfully!
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+    <section class="section dashboard" layout:fragment="custom-content">
+        <p>Your page content goes here</p>
+    </section>
+    <footer>
+        <p layout:fragment="custom-footer"></p>
+    </footer>
+</main>
+<div layout:fragment="custom-javascript">
+</div>
+<!--<script>-->
+<!--    // Sử dụng jQuery-->
+<!--    $(document).ready(function(){-->
+<!--        $(".nav-item.dropdown").click(function(){-->
+<!--            $(this).find(".dropdown-menu").toggle();-->
+<!--        });-->
+<!--    });-->
+
+<!--</script>-->
+</body>
+</html>

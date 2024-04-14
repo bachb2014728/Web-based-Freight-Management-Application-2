@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/app.html}">
+<head>
+    <title>Thêm nhân sự</title>
+</head>
+<body>
+<header class="pagetitle" layout:fragment="custom-header">
+    <h1 class="label">Quản lý nhân sự</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/dashboard}">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/employee/list}">Danh sách</a></li>
+            <li class="breadcrumb-item active">Thêm nhân sự</li>
+        </ol>
+    </nav>
+</header>
+<section layout:fragment="custom-content">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Thông tin cá nhân</h5>
+            <form class="row g-3" th:action="@{/employees/create}" method="post" th:object="${employee}">
+                <div class="row col-12">
+                    <div class="col-6">
+                        <label for="firstname" class="form-label">Họ</label>
+                        <input type="text" class="form-control" id="firstname" name="fistName" th:field="*{firstName}">
+                    </div>
+                    <div class="col-6">
+                        <label for="lastname" class="form-label">Tên</label>
+                        <input type="text" class="form-control" id="lastname" name="lastName" th:field="*{lastName}">
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" th:field="*{email}">
+                </div>
+                <div class="col-12">
+                    <label for="password" class="form-label">Mật khẩu</label>
+                    <input type="password" class="form-control" id="password" name="password" th:field="*{password}">
+                </div>
+                <div class="col-12">
+                    <label for="address" class="form-label">Địa chỉ</label>
+                    <input type="text" class="form-control" id="address" placeholder="1234 Main St">
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="reset" class="btn btn-secondary">Reset</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</section>
+<div layout:fragment="custom-javascript">
+</div>
+</body>
+</html>

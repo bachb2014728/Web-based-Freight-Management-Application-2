@@ -61,8 +61,8 @@ public class AuthenticationImpl implements Authentication {
             }
             Role role = roleRepository.findByName("USER").orElseThrow();
             UserDocument user = UserDocument.builder()
-                    .firstName(signUpRequest.getFirstName())
-                    .lastName(signUpRequest.getLastName())
+//                    .firstName(signUpRequest.getFirstName())
+//                    .lastName(signUpRequest.getLastName())
                     .email(signUpRequest.getEmail())
                     .isEnabled(true)
                     .password(passwordEncoder.encode(signUpRequest.getPassword()))

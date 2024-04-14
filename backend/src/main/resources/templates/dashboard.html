@@ -3,6 +3,7 @@
       layout:decorate="~{/app.html}">
 <head>
     <title>Trang chủ</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 </head>
 <body>
 <header class="pagetitle" layout:fragment="custom-header">
@@ -10,10 +11,96 @@
 </header>
 <section layout:fragment="custom-content">
     <div class="container">
-
+        <select id="provinces">
+            <!-- Options will be filled by JavaScript -->
+        </select>
+        <select id="districts">
+            <!-- Options will be filled by JavaScript -->
+        </select>
+        <select id="wards">
+            <!-- Options will be filled by JavaScript -->
+        </select>
     </div>
 </section>
 <div layout:fragment="custom-javascript">
+    <script>
+        const host = 'https://vnprovinces.pythonanywhere.com/api/provinces';
+
+        function fetchData(api, selectId) {
+            axios.get(api)
+                .then(response => {
+                    const data = response.data.results;
+                    const select = document.getElementById(selectId);
+
+                    // Clear previous options
+                    select.innerHTML = '';
+
+                    data.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.name;
+                        option.id = item.id;
+                        option.text = item.name;
+                        select.add(option);
+                    });
+                })
+                .catch(error => console.error(error));
+        }
+        function fetchDistricts(api, selectId) {
+            axios.get(api)
+                .then(response => {
+                    const data = response.data.districts;
+                    console.log(response.data)
+                    const select = document.getElementById(selectId);
+
+                    // Clear previous options
+                    select.innerHTML = '';
+
+                    data.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.name;
+                        option.id = item.id;
+                        option.text = item.name;
+                        select.add(option);
+                    });
+                })
+                .catch(error => console.error(error));
+        }
+        function fetchWards(api, selectId) {
+            axios.get(api)
+                .then(response => {
+                    const data = response.data.wards;
+                    const select = document.getElementById(selectId);
+
+                    // Clear previous options
+                    select.innerHTML = '';
+
+                    data.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.name;
+                        option.id = item.id;
+                        option.text = item.name;
+                        select.add(option);
+                    });
+                })
+                .catch(error => console.error(error));
+        }
+
+        document.getElementById('provinces').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const provinceId = selectedOption.getAttribute('id');
+            fetchDistricts(`${host}/${provinceId}`, 'districts');
+            // Clear wards
+            document.getElementById('wards').innerHTML = '';
+        });
+
+        document.getElementById('districts').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const districtId = selectedOption.getAttribute('id');
+            fetchWards(`https://vnprovinces.pythonanywhere.com/api/districts/${districtId}`, 'wards');
+        });
+
+        fetchData(`${host}?basic=true&limit=100`, 'provinces');
+    </script>
 </div>
 </body>
 </html>

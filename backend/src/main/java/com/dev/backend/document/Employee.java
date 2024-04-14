@@ -1,5 +1,6 @@
 package com.dev.backend.document;
 
+import com.dev.backend.web.dto.Address;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,13 +15,16 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Document(collection = "users")
-public class UserDocument {
+@Document(collection = "employees")
+public class Employee {
     @Id
     private String id;
-    private String email;
-    private String password;
-    private boolean isEnabled;
+    private String firstName;
+    private String lastName;
+    private Address address;
+    private String identifier; // Căn cước công dân
+    private String phone;
+    private List<Employee> employees;
     @DBRef
-    private List<Role> roles;
+    private UserDocument user;
 }

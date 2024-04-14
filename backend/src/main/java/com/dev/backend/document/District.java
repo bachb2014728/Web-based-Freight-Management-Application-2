@@ -14,13 +14,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Document(collection = "users")
-public class UserDocument {
+@Document(collection = "districts")
+public class District {
     @Id
     private String id;
-    private String email;
-    private String password;
-    private boolean isEnabled;
+    private String name;
     @DBRef
-    private List<Role> roles;
+    private List<Ward> wards;
 }

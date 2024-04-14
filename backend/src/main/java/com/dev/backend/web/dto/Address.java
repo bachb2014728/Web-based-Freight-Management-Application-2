@@ -1,0 +1,15 @@
+package com.dev.backend.web.dto;
+
+import com.dev.backend.document.District;
+import com.dev.backend.document.Province;
+import com.dev.backend.document.Ward;
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class Address {
+    private Ward ward;
+    private District district;
+    private Province province;
+}

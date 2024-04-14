@@ -1,7 +1,11 @@
 package com.dev.backend.config;
 
+import com.dev.backend.document.District;
+import com.dev.backend.document.Province;
 import com.dev.backend.document.Role;
 import com.dev.backend.document.UserDocument;
+import com.dev.backend.repository.DistrictRepository;
+import com.dev.backend.repository.ProvinceRepository;
 import com.dev.backend.repository.RoleRepository;
 import com.dev.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +28,13 @@ public class InitUsersConfig {
     public CommandLineRunner initUsers(PasswordEncoder passwordEncoder) {
         return args -> {
             if (!userRepository.existsByEmail("admin@gmail.com")) {
-                List<Role> roles = roleRepository.findAll();
+                Role role = roleRepository.findByName("ADMIN").get();
                 UserDocument user = UserDocument.builder()
                         .email("admin@gmail.com")
                         .password(passwordEncoder.encode("admin"))
-                        .roles(roles)
+                        .roles(Collections.singletonList(role))
                         .build();
-                userRepository.save(user);
+                UserDocument userNew = userRepository.save(user);
             }
             if (!userRepository.existsByEmail("staff@gmail.com")){
                 UserDocument user = UserDocument.builder()

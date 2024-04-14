@@ -1,26 +1,21 @@
 package com.dev.backend.document;
 
+import com.dev.backend.web.dto.Location;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Document(collection = "users")
-public class UserDocument {
+@Document(collection = "stores")
+public class Store {
     @Id
     private String id;
-    private String email;
-    private String password;
-    private boolean isEnabled;
-    @DBRef
-    private List<Role> roles;
+    private String name;
+    private Location address;
 }

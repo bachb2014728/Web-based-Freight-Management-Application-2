@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/app.html}">
+<head>
+    <title>Danh sách tuyến đường</title>
+</head>
+<body>
+<header class="pagetitle" layout:fragment="custom-header">
+    <h1 class="label">Quản lý tuyến đường</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/dashboard}">Trang chủ</a></li>
+            <li class="breadcrumb-item active">Danh sách</li>
+        </ol>
+    </nav>
+</header>
+<section layout:fragment="custom-content">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Danh sách tuyến đường</h5>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">id</th>
+                    <th scope="col">Tên tuyến đường</th>
+                    <th scope="col">Nơi bắt đầu</th>
+                    <th scope="col">Nơi kết thúc</th>
+                    <th scope="col">Khoảng cách</th>
+                    <th scope="col">Thời gian</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col">Ghi chú</th>
+                    <th scope="col">Chức năng</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="router : ${routers}">
+                    <th scope="row" th:text="${router.id}"></th>
+                    <td th:text="${router.name}"></td>
+                    <td th:text="${router.startPoint}"></td>
+                    <td th:text="${router.endPoint}"></td>
+                    <td th:text="${router.distance}"></td>
+                    <td th:text="${router.time}"></td>
+                    <td th:text="${router.status}"></td>
+                    <td th:text="${router.notes}"></td>
+                    <td>
+                        <a th:href="@{'/routers/'+${router.id}}" class="btn btn-sm btn-secondary"><i class="bi bi-search"></i></a>
+                        <a th:href="@{'routers/'+${router.id}+'/edit'}" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
+                        <a th:href="@{'/routers/'+${router.id}+'/delete'}" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+</body>
+</html>

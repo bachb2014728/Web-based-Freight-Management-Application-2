@@ -1,13 +1,7 @@
 package com.dev.backend.config;
 
-import com.dev.backend.document.District;
-import com.dev.backend.document.Province;
-import com.dev.backend.document.Role;
-import com.dev.backend.document.UserDocument;
-import com.dev.backend.repository.DistrictRepository;
-import com.dev.backend.repository.ProvinceRepository;
-import com.dev.backend.repository.RoleRepository;
-import com.dev.backend.repository.UserRepository;
+import com.dev.backend.document.*;
+import com.dev.backend.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +18,7 @@ import java.util.List;
 public class InitUsersConfig {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final EmployeeRepository employeeRepository;
     @Bean
     public CommandLineRunner initUsers(PasswordEncoder passwordEncoder) {
         return args -> {
@@ -35,6 +30,10 @@ public class InitUsersConfig {
                         .roles(Collections.singletonList(role))
                         .build();
                 UserDocument userNew = userRepository.save(user);
+                Employee employee = Employee.builder()
+                        .user(userNew)
+                        .build();
+                employeeRepository.save(employee);
             }
             if (!userRepository.existsByEmail("staff@gmail.com")){
                 UserDocument user = UserDocument.builder()

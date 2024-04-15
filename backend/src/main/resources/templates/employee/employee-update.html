@@ -1,10 +1,216 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/app.html}">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Cập nhật nhân sự</title>
 </head>
 <body>
+<header class="pagetitle" layout:fragment="custom-header">
+    <h1 class="label">Quản lý nhân sự</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/dashboard}">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/employees}">Danh sách</a></li>
+            <li class="breadcrumb-item active">Cập nhật nhân sự</li>
+        </ol>
+    </nav>
+</header>
+<section layout:fragment="custom-content">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Thông tin cá nhân</h5>
+            <form class="row g-3" th:action="@{/employees/__${id}__/update}" method="post">
+                <div class="row mb-3">
+                    <div class="col-sm">
+                        <label for="firstname" class="form-label">Họ :
+                            <em th:text="${employee.firstName}"></em>
+                        </label>
+                        <input type="text" class="form-control" id="firstname" name="firstName"  th:value="${employee.firstName}">
+                    </div>
+                    <div class="col-sm">
+                        <label for="lastname" class="form-label">
+                            Tên : <em th:text="${employee.lastName}"></em>
+                        </label>
+                        <input type="text" class="form-control" id="lastname" name="lastName" th:value="${employee.lastName}">
+                    </div>
+                    <div class="col-sm">
+                        <label for="date" class="form-label">
+                            Ngày sinh : <em th:text="${employee.date}"></em>
+                        </label>
+                        <input type="date" id="date" name="date"  class="form-control"
+                               th:value="${employee.date}" >
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm">
+                        <label for="identifier" class="form-label">
+                            Mã định danh : <em th:text="${employee.identifier}"></em>
+                        </label>
+                        <input type="text" class="form-control" id="identifier" name="identifier"  th:value="${employee.identifier}">
+                    </div>
+                    <div class="col-sm">
+                        <label for="phone" class="form-label">
+                            Số điện thoại : <em th:text="${employee.phone}"></em>
+                        </label>
+                        <input type="text" class="form-control" id="phone" name="phone" th:value="${employee.phone}">
+                    </div>
+                    <div class="col-sm">
+                        <label for="genderForm" class="form-label">Giới tính : <em th:text="${employee.gender}"></em></label>
+                        <div class="row " id="genderForm">
+                            <div class="form-check col">
+                                <input class="form-check-input" type="radio" name="gender" th:checked="${employee.gender == 'Nam'}" id="genderMale" value="Nam">
+                                <label class="form-check-label" for="genderMale">Nam</label>
+                            </div>
+                            <div class="form-check col">
+                                <input class="form-check-input" type="radio" name="gender" id="genderFemale" value="Nữ" th:checked="${employee.gender == 'Nữ'}">
+                                <label class="form-check-label" for="genderFemale">Nữ</label>
+                            </div>
+                            <div class="form-check col">
+                                <input class="form-check-input" type="radio" name="gender" id="genderNotFound" value="0" th:checked="${employee.gender == '0'}">
+                                <label class="form-check-label" for="genderNotFound">Khác</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm">
+                        <label for="address" class="form-label">Địa chỉ : <em th:text="${employee.address.toString()}"></em></label>
+                        <div id="address">
+                            <select id="province" name="province" class="form-select mb-3">
+                                <option class="province" th:value="${employee.address.getProvince().name}" th:text="${employee.address.getProvince().name}" th:id="${employee.address.getProvince().id}" selected>Chọn tỉnh thành</option>
+                            </select>
+                            <select id="district" name="district" class="form-select mb-3">
+                                <option class="district" th:value="${employee.address.getDistrict().name}" th:text="${employee.address.getDistrict().name}" th:id="${employee.address.getDistrict().id}" selected>Chọn tỉnh thành</option>
+                            </select>
+                            <select id="ward" name="ward" class="form-select mb-3">
+                                <option class="ward" th:value="${employee.address.getWard().name}" th:text="${employee.address.getWard().name}" th:id="${employee.address.getWard().id}" selected>Chọn tỉnh thành</option>
 
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <label for="user" class="form-label">Tài khoản : </label>
+                        <div id="user">
+                            <input type="text" class="form-control mb-3" id="email" name="email" th:value="${employee.user.email}" readonly>
+                            <select class="form-select mb-3" name="role">
+                                <th:block th:each="role : ${roles}">
+                                    <option th:value="${role.id}" th:text="${role.name}" th:selected="${role.id == employee.user.roles[0].id}"></option>
+                                </th:block>
+                            </select>
+                            <div class="row mb-3 mr-2">
+                                <div class="form-check col">
+                                    <input class="form-check-input" type="radio" id="gridCheck1" name="isEnabled" th:checked="${employee.user.enabled}" value="true">
+                                    <label class="form-check-label" for="gridCheck1">Hoạt động</label>
+                                </div>
+                                <div class="form-check col">
+                                    <input class="form-check-input" type="radio" id="gridCheck2" name="isEnabled" th:checked="${!employee.user.enabled}" value="false">
+                                    <label class="form-check-label" for="gridCheck2">Tạm khóa</label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Cập nhật nhân sự</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</section>
+<div layout:fragment="custom-javascript">
+    <script>
+        const host = 'https://vnprovinces.pythonanywhere.com/api/provinces';
+        const provinceRoot = document.getElementsByClassName("province")[0].innerHTML;
+        const districtRoot = document.getElementsByClassName("district")[0].innerHTML;
+        const wardRoot = document.getElementsByClassName("ward")[0].innerHTML;
+        function fetchData(api, selectId) {
+            console.log(provinceRoot);
+            axios.get(api)
+                .then(response => {
+                    const data = response.data.results;
+                    const select = document.getElementById(selectId);
+                    select.innerHTML = '';
+
+                    data.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.name;
+                        option.id = item.id;
+                        option.text = item.name;
+                        select.add(option);
+
+                        if (item.name === provinceRoot) {
+                            option.selected = true;
+                            fetchDistricts(`${host}/${item.id}`, 'district');
+                        }
+                    });
+                })
+                .catch(error => console.error(error));
+        }
+
+        function fetchDistricts(api, selectId) {
+            axios.get(api)
+                .then(response => {
+                    const data = response.data.districts;
+                    console.log(response.data)
+                    const select = document.getElementById(selectId);
+
+                    select.innerHTML = '';
+
+                    data.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.name;
+                        option.id = item.id;
+                        option.text = item.name;
+                        select.add(option);
+
+                        if (item.name === districtRoot) {
+                            option.selected = true;
+                            fetchWards(`https://vnprovinces.pythonanywhere.com/api/districts/${item.id}`, 'ward');
+                        }
+                    });
+                })
+                .catch(error => console.error(error));
+        }
+        function fetchWards(api, selectId) {
+            axios.get(api)
+                .then(response => {
+                    const data = response.data.wards;
+                    const select = document.getElementById(selectId);
+
+                    select.innerHTML = '';
+
+                    data.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.name;
+                        option.id = item.id;
+                        option.text = item.name;
+                        select.add(option);
+                        if (item.name === wardRoot) {
+                            option.selected = true;
+                        }
+                    });
+                })
+                .catch(error => console.error(error));
+        }
+
+        document.getElementById('province').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const provinceId = selectedOption.getAttribute('id');
+            fetchDistricts(`${host}/${provinceId}`, 'district');
+
+            document.getElementById('ward').innerHTML = '';
+        });
+        document.getElementById('district').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const districtId = selectedOption.getAttribute('id');
+            fetchWards(`https://vnprovinces.pythonanywhere.com/api/districts/${districtId}`, 'ward');
+        });
+
+        fetchData(`${host}?basic=true&limit=100`, 'province');
+    </script>
+</div>
 </body>
 </html>

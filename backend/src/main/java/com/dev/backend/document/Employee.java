@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -25,6 +27,9 @@ public class Employee {
     private String identifier; // Căn cước công dân
     private String phone;
     private List<Employee> employees;
+    private String gender;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date date;
     @DBRef
     private UserDocument user;
 }

@@ -49,7 +49,6 @@
             axios.get(api)
                 .then(response => {
                     const data = response.data.districts;
-                    console.log(response.data)
                     const select = document.getElementById(selectId);
 
                     // Clear previous options

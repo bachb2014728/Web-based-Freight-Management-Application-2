@@ -12,4 +12,9 @@ public class Address {
     private Ward ward;
     private District district;
     private Province province;
+
+    @Override
+    public String toString() {
+        return ward.getName() + ", " + district.getName() + ", " + province.getName();
+    }
 }

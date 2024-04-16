@@ -1,10 +1,108 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/app.html}">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Thêm hàng hóa</title>
 </head>
 <body>
+<header class="pagetitle" layout:fragment="custom-header">
+    <h1 class="label">Quản lý hàng hóa</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/dashboard}">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/merchandises}">Danh sách</a></li>
+            <li class="breadcrumb-item active">Thêm hàng hóa</li>
+        </ol>
+    </nav>
+</header>
+<section layout:fragment="custom-content">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Thông tin hàng hóa</h5>
+            <form class="row g-3" th:action="@{/merchandises/save}" method="post" th:object="${merchandise}" enctype="multipart/form-data">
+                <input type="hidden" name="isEnabled" th:value="true">
+                <div class="row mb-3">
+                    <div class="col-sm">
+                        <label for="name" class="form-label">Tên hàng hóa</label>
+                        <input type="text" class="form-control" id="name" name="name" th:field="*{name}" th:value="${merchandise.name}">
+                    </div>
+                    <div class="col-sm">
+                        <input type="hidden" name="images" th:field="*{images}">
+                        <label for="image" class="form-label">Hình ảnh</label>
+                        <input type="file" id="image" name="photos"  class="form-control"  multiple>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm">
+                        <label for="weight" class="form-label">Trọng lượng</label>
+                        <input type="number" class="form-control" id="weight" name="weight" th:field="*{weight}" th:value="${merchandise.weight}">
+                    </div>
+                    <div class="col-sm">
+                        <label for="price" class="form-label">Giá trị</label>
+                        <input type="number" class="form-control" id="price" name="price" th:field="*{price}" th:value="${merchandise.price}">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm">
+                        <p  class="label text-center">Thông tin người gửi</p>
+                        <div class="mb-3">
+                            <label for="nameSender" class="form-label">Tên người gửi</label>
+                            <input type="text" class="form-control" id="nameSender" name="nameSender" th:field="*{nameSender}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="phoneSender" class="form-label">Số điện thoại</label>
+                            <input type="text" class="form-control" id="phoneSender" name="phoneSender" th:field="*{phoneSender}">
+                        </div>
+                        <label for="addressStart" class="form-label">Địa chỉ</label>
+                        <div id="addressStart">
+                            <select id="provincesStart" name="provinceSender" class="form-select mb-3" th:field="*{provinceSender}">
+                                <option value="" selected>Chọn tỉnh thành</option>
+                            </select>
+                            <select id="districtsStart" name="districtSender" class="form-select mb-3" th:field="*{districtSender}">
+                                <option value="" selected>Chọn quận huyện</option>
+                            </select>
+                            <select id="wardsStart" name="wardSender" class="form-select mb-3" th:field="*{wardSender}">
+                                <option value="" selected>Chọn phường xã</option>
+                            </select>
 
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <p  class="label text-center">Thông tin người nhận</p>
+                        <div class="mb-3">
+                            <label for="nameReceiver" class="form-label">Tên người gửi</label>
+                            <input type="text" class="form-control" id="nameReceiver" name="nameReceiver" th:field="*{nameReceiver}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="phoneReceiver" class="form-label">Số điện thoại</label>
+                            <input type="text" class="form-control" id="phoneReceiver" name="phoneReceiver" th:field="*{phoneReceiver}">
+                        </div>
+                        <label for="addressEnd" class="form-label">Địa chỉ</label>
+                        <div id="addressEnd">
+                            <select id="provincesEnd" name="province" class="form-select mb-3" th:field="*{provinceReceiver}">
+                                <option value="" selected>Chọn tỉnh thành</option>
+                            </select>
+                            <select id="districtsEnd" name="district" class="form-select mb-3" th:field="*{districtReceiver}">
+                                <option value="" selected>Chọn quận huyện</option>
+                            </select>
+                            <select id="wardsEnd" name="ward" class="form-select mb-3" th:field="*{wardReceiver}">
+                                <option value="" selected>Chọn phường xã</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Thêm hàng hóa</button>
+                    <button type="reset" class="btn btn-secondary">Reset</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</section>
+<div layout:fragment="custom-javascript">
+    <script th:src="@{/js/getLocation.js}"></script>
+</div>
 </body>
 </html>

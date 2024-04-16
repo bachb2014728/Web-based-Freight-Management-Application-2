@@ -1,10 +1,258 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/app.html}">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Cập nhật hàng hóa</title>
 </head>
 <body>
+<header class="pagetitle" layout:fragment="custom-header">
+    <h1 class="label">Quản lý hàng hóa</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/dashboard}">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/merchandises}">Danh sách</a></li>
+            <li class="breadcrumb-item active">Cập nhật hàng hóa</li>
+        </ol>
+    </nav>
+</header>
+<section layout:fragment="custom-content">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Thông tin hàng hóa</h5>
+            <form class="row g-3" th:action="@{/merchandises/__${id}__/update}" method="post" th:object="${merchandise}" enctype="multipart/form-data">
+                <input type="hidden" name="isEnabled" th:value="true">
+                <div class="row mb-3">
+                    <div class="col-sm">
+                        <label for="name" class="form-label">Tên hàng hóa :
+                            <em th:text="${merchandise.name}"></em>
+                        </label>
+                        <input type="text" class="form-control" id="name" name="name" th:field="*{name}" th:value="${merchandise.name}">
+                    </div>
+                    <div class="col-sm">
+                        <th:block th:each="image : ${merchandise.images}">
+                            <img th:src="${@imageUtil.convertToBase64String(image)}" alt="" style="width: 5rem">
+                        </th:block>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm row">
+                        <div class="col-sm">
+                            <label for="weight" class="form-label">Trọng lượng :
+                                <em th:text="${@formatUtil.formatWeight(merchandise.weight)}"></em>
+                            </label>
+                            <input type="number" class="form-control" id="weight" name="weight" th:field="*{weight}" th:value="${merchandise.weight}">
+                        </div>
+                        <div class="col-sm">
+                            <label for="price" class="form-label">Giá trị :
+                                <em th:text="${@formatUtil.formatCurrency(merchandise.price)}"></em>
+                            </label>
+                            <input type="number" class="form-control" id="price" name="price" th:field="*{price}" th:value="${merchandise.price}">
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <label for="image" class="form-label">Hình ảnh</label>
+                        <input type="file" id="image" name="photos"  class="form-control"  multiple>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm">
+                        <p  class="label text-center">Thông tin người gửi</p>
+                        <div class="mb-3">
+                            <label for="nameSender" class="form-label">Tên người gửi :
+                                <em th:text="${merchandise.sender.name}"></em>
+                            </label>
+                            <input type="text" class="form-control" id="nameSender" name="nameSender" th:value="${merchandise.sender.name}" th:field="*{sender.name}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="phoneSender" class="form-label">Số điện thoại :
+                                <em th:text="${merchandise.sender.phone}"></em>
+                            </label>
+                            <input type="text" class="form-control" id="phoneSender" name="phoneSender" th:field="*{sender.phone}" th:value="${merchandise.sender.phone}">
+                        </div>
+                        <label for="addressStart" class="form-label">Địa chỉ : <em th:text="${merchandise.sender.address.toString()}"></em></label>
+                        <div id="addressStart">
+                            <select id="provinceStart" name="provinceSender" class="form-select mb-3" th:field="*{sender.address.province.name}">
+                                <option class="provinceSender" th:value="${merchandise.sender.address.province.name}" th:text="${merchandise.sender.address.province.name}" th:id="${merchandise.sender.address.province.id}" selected>Chọn tỉnh thành</option>
+                            </select>
+                            <select id="districtStart" name="districtSender" class="form-select mb-3" th:field="*{sender.address.district.name}">
+                                <option class="districtSender" th:value="${merchandise.sender.address.district.name}" th:text="${merchandise.sender.address.district.name}" th:id="${merchandise.sender.address.district.id}" selected>Chọn tỉnh thành</option>
+                            </select>
+                            <select id="wardStart" name="wardSender" class="form-select mb-3" th:field="*{sender.address.ward.name}">
+                                <option class="wardSender" th:value="${merchandise.sender.address.ward.name}" th:text="${merchandise.sender.address.ward.name}" th:id="${merchandise.sender.address.ward.id}" selected>Chọn tỉnh thành</option>
+                            </select>
 
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <p  class="label text-center">Thông tin người nhận</p>
+                        <div class="mb-3">
+                            <label for="nameReceiver" class="form-label">Tên người nhận : <em th:text="${merchandise.receiver.name}"></em></label>
+                            <input type="text" class="form-control"
+                                   id="nameReceiver" name="nameReceiver"
+                                   th:value="${merchandise.receiver.name}"
+                                   th:field="*{receiver.name}"
+                            >
+                        </div>
+                        <div class="mb-3">
+                            <label for="phoneReceiver" class="form-label">Số điện thoại : <em th:text="${merchandise.receiver.phone}"></em></label>
+                            <input type="text" class="form-control" id="phoneReceiver"
+                                   name="phoneReceiver"
+                                   th:value="${merchandise.receiver.phone}"
+                                   th:field="*{receiver.phone}"
+                            >
+                        </div>
+                        <label for="addressEnd" class="form-label">Địa chỉ : <em th:text="${merchandise.receiver.address.toString()}"></em></label>
+                        <div id="addressEnd">
+                            <select id="provinceEnd" name="provinceReceiver" class="form-select mb-3" th:field="*{receiver.address.province.name}">
+                                <option class="provinceEnd" th:value="${merchandise.receiver.address.province.name}" th:text="${merchandise.receiver.address.province.name}" th:id="${merchandise.receiver.address.province.id}" selected>Chọn tỉnh thành</option>
+                            </select>
+                            <select id="districtEnd" name="districtReceiver" class="form-select mb-3" th:field="*{receiver.address.district.name}">
+                                <option class="districtEnd" th:value="${merchandise.receiver.address.district.name}" th:text="${merchandise.receiver.address.district.name}" th:id="${merchandise.receiver.address.district.id}" selected></option>
+                            </select>
+                            <select id="wardEnd" name="wardReceiver" class="form-select mb-3" th:field="*{receiver.address.ward.name}">
+                                <option class="wardEnd" th:value="${merchandise.receiver.address.ward.name}" th:text="${merchandise.receiver.address.getWard().name}" th:id="${merchandise.receiver.address.getWard().id}" selected></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Cập nhật hàng hóa</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</section>
+<div layout:fragment="custom-javascript">
+    <script>
+        const host = 'https://vnprovinces.pythonanywhere.com/api/provinces';
+        const provinceStartRoot = document.getElementsByClassName("provinceSender")[0].innerHTML;
+        const districtStartRoot = document.getElementsByClassName("districtSender")[0].innerHTML;
+        const wardStartRoot = document.getElementsByClassName("wardSender")[0].innerHTML;
+        const provinceEndRoot = document.getElementsByClassName("provinceEnd")[0].innerHTML;
+        const districtEndRoot = document.getElementsByClassName("districtEnd")[0].innerHTML;
+        const wardEndRoot = document.getElementsByClassName("wardEnd")[0].innerHTML;
+        function fetchDataStart(api, selectId) {
+            axios.get(api)
+                .then(response => {
+                    const data = response.data.results;
+                    const select = document.getElementById(selectId);
+
+                    select.innerHTML = '';
+
+                    data.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.name;
+                        option.id = item.id;
+                        option.text = item.name;
+                        select.add(option);
+                        if (item.name === provinceStartRoot) {
+                            option.selected = true;
+                            fetchDistricts(`${host}/${item.id}`, 'districtStart' ,districtStartRoot, wardStartRoot, 'wardStart');
+                        }
+                    });
+                })
+                .catch(error => console.error(error));
+        }
+
+        function fetchDataEnd(api, selectId) {
+            console.log(provinceStartRoot)
+            axios.get(api)
+                .then(response => {
+                    const data = response.data.results;
+                    const select = document.getElementById(selectId);
+
+                    select.innerHTML = '';
+
+                    data.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.name;
+                        option.id = item.id;
+                        option.text = item.name;
+                        select.add(option);
+                        if (item.name === provinceEndRoot) {
+                            option.selected = true;
+                            fetchDistricts(`${host}/${item.id}`, 'districtEnd', districtEndRoot, wardEndRoot, 'wardEnd');
+                        }
+                    });
+                })
+                .catch(error => console.error(error));
+        }
+
+        function fetchDistricts(api, selectId, itemProvince, itemDistrict, ward) {
+            axios.get(api)
+                .then(response => {
+                    const data = response.data.districts;
+                    console.log(response.data)
+                    const select = document.getElementById(selectId);
+
+                    select.innerHTML = '';
+
+                    data.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.name;
+                        option.id = item.id;
+                        option.text = item.name;
+                        select.add(option);
+                        if (item.name === itemProvince) {
+                            option.selected = true;
+                            fetchWards(`https://vnprovinces.pythonanywhere.com/api/districts/${item.id}`,ward,itemDistrict);
+                        }
+                    });
+                })
+                .catch(error => console.error(error));
+        }
+        function fetchWards(api, selectId, itemDistrict) {
+            axios.get(api)
+                .then(response => {
+                    const data = response.data.wards;
+                    const select = document.getElementById(selectId);
+
+                    select.innerHTML = '';
+
+                    data.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.name;
+                        option.id = item.id;
+                        option.text = item.name;
+                        select.add(option);
+                        if (item.name === itemDistrict) {
+                            option.selected = true;
+                        }
+                    });
+                })
+                .catch(error => console.error(error));
+        }
+
+        document.getElementById('provinceStart').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const provinceId = selectedOption.getAttribute('id');
+            fetchDistricts(`${host}/${provinceId}`, 'districtStart',districtStartRoot, wardStartRoot);
+            // Clear wards
+            document.getElementById('wardStart').innerHTML = '';
+        });
+
+        document.getElementById('provinceEnd').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const provinceId = selectedOption.getAttribute('id');
+            fetchDistricts(`${host}/${provinceId}`, 'districtEnd', districtEndRoot, wardEndRoot);
+            document.getElementById('wardEnd').innerHTML = '';
+        });
+        document.getElementById('districtStart').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const districtId = selectedOption.getAttribute('id');
+            fetchWards(`https://vnprovinces.pythonanywhere.com/api/districts/${districtId}`, 'wardStart', wardStartRoot);
+        });
+        document.getElementById('districtEnd').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const districtId = selectedOption.getAttribute('id');
+            fetchWards(`https://vnprovinces.pythonanywhere.com/api/districts/${districtId}`, 'wardEnd', wardEndRoot);
+        });
+
+        fetchDataStart(`${host}?basic=true&limit=100`, 'provinceStart');
+        fetchDataEnd(`${host}?basic=true&limit=100`, 'provinceEnd');
+    </script>
+</div>
 </body>
 </html>

@@ -1,10 +1,84 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/app.html}">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Xem chi tiết hàng hóa</title>
 </head>
 <body>
-
+<header class="pagetitle" layout:fragment="custom-header">
+    <h1 class="label">Quản lý hàng hóa</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/dashboard}">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/merchandises}">Danh sách</a></li>
+            <li class="breadcrumb-item active">Xem chi tiết hàng hóa</li>
+        </ol>
+    </nav>
+</header>
+<section layout:fragment="custom-content">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Thông tin hàng hóa</h5>
+            <form class="row g-3" th:object="${merchandise}">
+                <div class="row mb-3">
+                    <div class="col-sm">
+                        <label for="name" class="form-label">Tên hàng hóa</label>
+                        <input type="text" class="form-control" id="name" name="name" t th:value="${merchandise.name}" readonly>
+                    </div>
+                    <div class="col-sm">
+                        <label class="form-label">Hình ảnh</label>
+                        <th:block th:each="image : ${merchandise.images}">
+                            <img th:src="${@imageUtil.convertToBase64String(image)}" alt="" style="width: 5rem">
+                        </th:block>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm">
+                        <label for="weight" class="form-label">Trọng lượng</label>
+                        <input type="number" class="form-control" id="weight" name="weight" th:value="${merchandise.weight}" readonly>
+                    </div>
+                    <div class="col-sm">
+                        <label for="price" class="form-label">Giá trị</label>
+                        <input type="number" class="form-control" id="price" name="price" th:value="${merchandise.price}" readonly>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm">
+                        <p  class="label text-center">Thông tin người gửi</p>
+                        <div class="mb-3">
+                            <label for="nameSender" class="form-label">Tên người gửi</label>
+                            <input type="text" class="form-control" id="nameSender" name="nameSender" th:value="${merchandise.sender.name}" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phoneSender" class="form-label">Số điện thoại</label>
+                            <input type="text" class="form-control" id="phoneSender" name="phoneSender" th:value="${merchandise.sender.phone}" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="addressStart" class="form-label">Địa chỉ</label>
+                            <input type="text" class="form-control" id="addressStart" name="addressSender" th:value="${merchandise.sender.address.toString()}" readonly>
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <p  class="label text-center">Thông tin người nhận</p>
+                        <div class="mb-3">
+                            <label for="nameReceiver" class="form-label">Tên người gửi</label>
+                            <input type="text" class="form-control" id="nameReceiver" name="nameReceiver" th:value="${merchandise.receiver.name}" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phoneReceiver" class="form-label">Số điện thoại</label>
+                            <input type="text" class="form-control" id="phoneReceiver" name="phoneReceiver" th:value="${merchandise.receiver.phone}" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="addressEnd" class="form-label">Địa chỉ</label>
+                            <input type="text" class="form-control" id="addressEnd" name="addressReceiver" th:value="${merchandise.receiver.address.toString()}" readonly>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+<div layout:fragment="custom-javascript">
+</div>
 </body>
 </html>

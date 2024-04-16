@@ -1,10 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/app.html}">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Quản lý hàng hóa</title>
 </head>
 <body>
-
+<header class="pagetitle" layout:fragment="custom-header">
+    <h1 class="label">Quản lý hàng hóa</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/dashboard}">Trang chủ</a></li>
+            <li class="breadcrumb-item active">Hàng hóa</li>
+        </ol>
+    </nav>
+</header>
+<section layout:fragment="custom-content">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Danh sách hàng hóa</h5>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Tên</th>
+                    <th scope="col">Hình ảnh</th>
+                    <th scope="col">Giá tiền</th>
+                    <th scope="col">Khối lượng</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col">Chức năng</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="merchandise : ${merchandises}" class="text-center">
+                        <td th:text="${merchandise.id}"></td>
+                        <td th:text="${merchandise.name}"></td>
+                        <td>
+                            <img th:src="${@imageUtil.convertToBase64String(merchandise.images[0])}" alt="" style="width: 5rem">
+                        </td>
+                        <td th:text="${@formatUtil.formatCurrency(merchandise.price)}"></td>
+                        <td th:text="${@formatUtil.formatWeight(merchandise.weight)}"></td>
+                        <td >
+                            <span th:if="${merchandise.status}"  class="badge text-bg-success">đợi lấy hàng</span>
+                            <span th:unless="${merchandise.status}"  class="badge text-bg-danger">lưu trữ</span>
+                        </td>
+                        <td>
+                            <a th:href="@{'/merchandises/'+${merchandise.id}}" class="btn btn-sm btn-secondary"><i class="bi bi-search"></i></a>
+                            <a th:href="@{'/merchandises/'+${merchandise.id}+'/edit'}" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
+                            <a th:href="@{'/merchandises/'+${merchandise.id}+'/delete'}" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+<div layout:fragment="custom-javascript">
+</div>
 </body>
 </html>

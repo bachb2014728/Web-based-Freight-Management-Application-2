@@ -1,13 +1,10 @@
+<template>
+  <Nav/>
+  <router-view/>
+</template>
 <script>
+import Nav from "@/components/NavbarComponent.vue";
 export default {
+  components: {Nav}
 }
 </script>
-<template>
-  <h1>Hello, Vue.js!</h1>
-</template>
-<style>
-.page {
-  max-width: 400px;
-  margin: auto;
-}
-</style>

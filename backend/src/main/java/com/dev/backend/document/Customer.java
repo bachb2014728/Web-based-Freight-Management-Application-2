@@ -9,6 +9,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,6 +22,8 @@ public class Customer {
     private String firstName;
     private String lastName;
     private Address address;
+    @DBRef
+    private List<Merchandise> merchandises;
     @DBRef
     private UserDocument user;
 

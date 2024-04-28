@@ -1,6 +1,7 @@
 package com.dev.backend.web.dto;
 
 import com.dev.backend.document.*;
+import com.dev.backend.web.dto.location.Address;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;

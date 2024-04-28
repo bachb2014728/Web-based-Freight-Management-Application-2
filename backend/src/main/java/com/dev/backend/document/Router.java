@@ -1,6 +1,6 @@
 package com.dev.backend.document;
 
-import com.dev.backend.web.dto.Location;
+import com.dev.backend.web.dto.location.Location;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

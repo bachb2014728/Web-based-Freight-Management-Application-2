@@ -1,13 +1,21 @@
 spring:
   data:
     mongodb:
-      database: ${env.MONGO_DATABASE}
-      uri: mongodb+srv://${env.MONGO_USER}:${env.MONGO_PASSWORD}@${env.MONGO_CLUSTER}
+      uri: mongodb://localhost:27017
+      database: "transport-app"
+    #    mongodb:
+#      database: ${env.MONGO_DATABASE}
+#      uri: mongodb+srv://${env.MONGO_USER}:${env.MONGO_PASSWORD}@${env.MONGO_CLUSTER}
+
   jpa:
     hibernate:
       ddl-auto: update
   web:
     resources:
       add-mappings: false
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
 server:
   port: 8000

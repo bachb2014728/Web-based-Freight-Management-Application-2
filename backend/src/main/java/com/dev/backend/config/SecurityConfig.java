@@ -15,14 +15,19 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.session.CompositeSessionAuthenticationStrategy;
+import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -31,32 +36,44 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class SecurityConfig{
     private final CustomUserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        return http
+    public SecurityFilterChain jwtSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/api/v1/auth/**","/css/**","/js/**").permitAll();
-                    auth.requestMatchers("/dashboard/**","/api/**","/employee/**").hasAnyAuthority("ADMIN","STAFF");
-                    auth.requestMatchers( "/api/**").hasAnyAuthority("USER");
+                    auth.requestMatchers("/api/v1/auth/**","/css/**","/js/**","/login").permitAll();
+                    auth.requestMatchers("/api/**").hasAnyAuthority("USER");
+                    auth.requestMatchers("/dashboard/**","/employee/**","/**").hasAnyAuthority("ADMIN","STAFF");
                     auth.anyRequest().authenticated();
                 })
+                .sessionManagement(manage -> manage
+//                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        .sessionAuthenticationStrategy(sessionAuthenticationStrategy())
+                )
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(
+                        jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class
+                )
                 .formLogin(
                         form -> form.loginPage("/login")
                                 .defaultSuccessUrl("/dashboard",true)
                                 .loginProcessingUrl("/login")
                                 .failureUrl("/login?error=true").permitAll()
-                ).logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                )
+                .logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                         .logoutSuccessUrl("/login")
-                        .permitAll()
-                )
-//                .sessionManagement(manage -> manage.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .authenticationProvider(authenticationProvider())
-                .addFilterBefore(
-                        jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class
-                )
-                .build();
+                        .permitAll());
+        return http.build();
     }
+    @Bean
+    public SessionAuthenticationStrategy sessionAuthenticationStrategy() {
+        return new CompositeSessionAuthenticationStrategy(Arrays.asList(
+                new SessionFixationProtectionStrategy(),
+                new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl())
+        ));
+    }
+
     @Bean
     public AccessDeniedHandler accessDeniedHandler() {
         return new CustomAccessDeniedHandler();
@@ -76,19 +93,5 @@ public class SecurityConfig{
         authenticationProvider.setHideUserNotFoundExceptions(false);
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         return authenticationProvider;
-    }
-
-    @Bean
-    public WebMvcConfigurer corsConfigurer(){
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-
-                registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:8001")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
-                        .allowCredentials(true);
-            }
-        };
     }
 }

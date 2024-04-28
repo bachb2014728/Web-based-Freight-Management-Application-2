@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface WardRepository extends MongoRepository<Ward, String> {
     boolean existsByName(String name);
+
+    Ward findByName(String name);
 }

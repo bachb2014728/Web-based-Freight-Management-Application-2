@@ -1,6 +1,6 @@
 package com.dev.backend.document;
 
-import com.dev.backend.web.dto.Address;
+import com.dev.backend.web.dto.location.Address;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,6 +9,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -21,6 +22,10 @@ public class Customer {
     private String id;
     private String firstName;
     private String lastName;
+    private String gender;
+    private Date date;
+    private String phone;
+    private String codeId;
     private Address address;
     @DBRef
     private List<Merchandise> merchandises;

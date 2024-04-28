@@ -1,4 +1,4 @@
-package com.dev.backend.web.dto;
+package com.dev.backend.web.dto.location;
 
 import com.dev.backend.document.District;
 import com.dev.backend.document.Province;

@@ -1,4 +1,4 @@
-package com.dev.backend.web.dto;
+package com.dev.backend.web.dto.location;
 
 import lombok.Builder;
 import lombok.Data;

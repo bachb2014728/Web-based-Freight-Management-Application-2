@@ -7,17 +7,12 @@ import store from './store';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import AuthService from "@/services/auth.service.js";
-import axios from "axios";
 
 async function checkAuthentication() {
     const token = localStorage.getItem('token');
     if (token != null) {
-        const response = await  AuthService.profile({
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        await store.dispatch('setMessage', response.data.username); // update message
+        const response = await AuthService.profile();
+        await store.dispatch('setMessage', response.data.username);
         await store.dispatch('setAuth', true);
     } else {
         await store.dispatch('setAuth', false);

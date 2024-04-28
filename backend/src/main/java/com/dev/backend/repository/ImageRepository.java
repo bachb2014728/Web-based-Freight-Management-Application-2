@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ImageRepository extends MongoRepository<Image, String> {
     boolean existsById(String id);
+    Image findByName(String name);
 }

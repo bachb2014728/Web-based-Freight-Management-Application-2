@@ -2,9 +2,8 @@ package com.dev.backend.service.Impl;
 
 import com.dev.backend.document.Router;
 import com.dev.backend.repository.RouterRepository;
-import com.dev.backend.repository.WardRepository;
 import com.dev.backend.service.RouterService;
-import com.dev.backend.web.dto.Location;
+import com.dev.backend.web.dto.location.Location;
 import com.dev.backend.web.dto.RouterDto;
 import com.dev.backend.web.dto.RouterRequest;
 import lombok.RequiredArgsConstructor;

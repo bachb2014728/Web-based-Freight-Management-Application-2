@@ -21,10 +21,10 @@
 
 <script>
 import { reactive } from "vue";
-import AuthService from "@/services/auth.service.js";
 import { useRouter } from "vue-router";
 import axios from "axios";
 import { useStore } from 'vuex';
+import AuthService from "@/services/auth.service.js";
 
 export default {
   name: "LoginView",
@@ -52,11 +52,11 @@ export default {
 
         if (Object.values(errors).every(error => !error)) {
           const response = await AuthService.login(data);
-          console.log(response);
+
           if (response && response.status === 200) {
             await store.dispatch('setAuth', true);
-            axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
             localStorage.setItem('token', response.data.token);
+            axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
             await router.push('/');
           } else {
             errors.email = 'Email hoặc mật khẩu không đúng.';

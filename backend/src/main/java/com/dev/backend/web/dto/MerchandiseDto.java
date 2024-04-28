@@ -1,6 +1,6 @@
 package com.dev.backend.web.dto;
 
-import com.dev.backend.document.Image;
+import com.dev.backend.web.dto.location.Information;
 import lombok.Builder;
 import lombok.Data;
 

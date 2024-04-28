@@ -3,7 +3,6 @@ package com.dev.backend.web.controller;
 import com.dev.backend.document.Role;
 import com.dev.backend.service.EmployeeService;
 import com.dev.backend.service.RoleService;
-import com.dev.backend.service.UserService;
 import com.dev.backend.web.dto.CreateEmployee;
 import com.dev.backend.web.dto.EmployeeDto;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,6 @@ import java.util.List;
 @RequestMapping("/employees")
 @RequiredArgsConstructor
 public class EmployeeController {
-    private final UserService userService;
     private final EmployeeService employeeService;
     private final RoleService roleService;
     @GetMapping("")

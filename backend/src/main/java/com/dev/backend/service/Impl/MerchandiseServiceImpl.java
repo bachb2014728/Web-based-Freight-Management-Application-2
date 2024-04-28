@@ -2,8 +2,18 @@ package com.dev.backend.service.Impl;
 
 import com.dev.backend.document.*;
 import com.dev.backend.repository.*;
+import com.dev.backend.rest.dto.MerchandiseResponse;
+import com.dev.backend.rest.dto.MerchandiseUpdateRequest;
+import com.dev.backend.rest.dto.MessageObject;
+import com.dev.backend.rest.dto.address.InformationRequest;
 import com.dev.backend.service.MerchandiseService;
+import com.dev.backend.service.helper.ConvertAddress;
+import com.dev.backend.service.helper.ConvertImage;
+import com.dev.backend.service.helper.ConvertMerchandise;
+import com.dev.backend.service.helper.ConvertUser;
 import com.dev.backend.web.dto.*;
+import com.dev.backend.web.dto.location.*;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.jetbrains.annotations.NotNull;
@@ -11,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.Deflater;
@@ -21,14 +33,15 @@ import java.util.zip.Inflater;
 public class MerchandiseServiceImpl implements MerchandiseService {
     private final MerchandiseRepository merchandiseRepository;
     private final ImageRepository imageRepository;
-    private final ProvinceRepository provinceRepository;
-    private final DistrictRepository districtRepository;
-    private final WardRepository wardRepository;
+    private final ConvertAddress convertAddress;
+    private final ConvertUser convertUser;
+    private final ConvertImage convertImage;
+    private final ConvertMerchandise convertMerchandise;
 
     @Override
     public List<MerchandiseDto> getAllMerchandise() {
         List<Merchandise> merchandises = merchandiseRepository.findAll();
-        return merchandises.stream().map(this::mapMerchandiseToMerchandiseDto).collect(Collectors.toList());
+        return merchandises.stream().map(convertMerchandise::mapMerchandiseToMerchandiseDto).collect(Collectors.toList());
     }
 
     @Override
@@ -37,7 +50,7 @@ public class MerchandiseServiceImpl implements MerchandiseService {
                 .name(merchandise.getNameSender())
                 .phone(merchandise.getPhoneSender())
                 .address(
-                        getAddress(merchandise.getProvinceSender(),merchandise.getDistrictSender(), merchandise.getWardSender())
+                        convertAddress.getAddress(merchandise.getProvinceSender(),merchandise.getDistrictSender(), merchandise.getWardSender())
                 )
                 .build();
         List<Image> images = new ArrayList<>();
@@ -45,7 +58,7 @@ public class MerchandiseServiceImpl implements MerchandiseService {
             Image image = Image.builder()
                     .name(photo.getOriginalFilename())
                     .type(photo.getContentType())
-                    .imageData(compressImage(photo.getBytes()))
+                    .imageData(convertImage.compressImage(photo.getBytes()))
                     .build();
             Image imageNew = imageRepository.save(image);
             images.add(imageNew);
@@ -61,19 +74,20 @@ public class MerchandiseServiceImpl implements MerchandiseService {
                                 .name(merchandise.getNameReceiver())
                                 .phone(merchandise.getPhoneReceiver())
                                 .address(
-                                        getAddress(merchandise.getProvinceReceiver(), merchandise.getDistrictReceiver(), merchandise.getWardReceiver())
+                                        convertAddress.getAddress(merchandise.getProvinceReceiver(), merchandise.getDistrictReceiver(), merchandise.getWardReceiver())
                                 )
                                 .build()
                 )
                 .images(images)
+                .createdAt(ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).toLocalDateTime())
                 .build();
         merchandiseRepository.save(merchandiseNew);
     }
 
     @Override
     public MerchandiseDto getOneMerchandise(String id) {
-        Merchandise merchandise = merchandiseRepository.findById(id).get();
-        return mapMerchandiseToMerchandiseDto(merchandise);
+        Merchandise merchandise = merchandiseRepository.findById(id).orElseThrow();
+        return convertMerchandise.mapMerchandiseToMerchandiseDto(merchandise);
     }
 
     @Override
@@ -96,7 +110,7 @@ public class MerchandiseServiceImpl implements MerchandiseService {
             List<byte[]> images = new ArrayList<>();
             for(Image image : merchandise.getImages()){
                 Optional<Image> imageItem = imageRepository.findById(image.getId());
-                images.add(decompressImage(imageItem.get().getImageData()));
+                images.add(convertImage.decompressImage(imageItem.get().getImageData()));
             }
             return EditMerchandise.builder()
                     .name(merchandise.getName())
@@ -117,15 +131,25 @@ public class MerchandiseServiceImpl implements MerchandiseService {
         merchandise.setName(editMerchandise.getName());
         merchandise.setPrice(editMerchandise.getPrice());
         merchandise.setWeight(editMerchandise.getWeight());
+        merchandise.setUpdatedOn(ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).toLocalDateTime());
         merchandise.setSender(
                 Information.builder()
                         .name(editMerchandise.getSender().getName())
                         .phone(editMerchandise.getSender().getPhone())
                         .address(
-                                getAddress(
-                                        editMerchandise.getSender().getAddress().getProvince().getName(),
-                                        editMerchandise.getSender().getAddress().getDistrict().getName(),
-                                        editMerchandise.getSender().getAddress().getWard().getName()
+                                convertAddress.getAddress(
+                                        ProvinceDto.builder()
+                                                .code(editMerchandise.getSender().getAddress().getProvince().getCode())
+                                                .name(editMerchandise.getSender().getAddress().getProvince().getName())
+                                                .build(),
+                                        DistrictDto.builder()
+                                                .code(editMerchandise.getSender().getAddress().getDistrict().getId())
+                                                .name(editMerchandise.getSender().getAddress().getDistrict().getName())
+                                                .build(),
+                                        WardDto.builder()
+                                                .code(editMerchandise.getSender().getAddress().getWard().getCode())
+                                                .name(editMerchandise.getSender().getAddress().getWard().getName())
+                                                .build()
                                 )
                         )
                         .build()
@@ -135,10 +159,19 @@ public class MerchandiseServiceImpl implements MerchandiseService {
                         .name(editMerchandise.getReceiver().getName())
                         .phone(editMerchandise.getReceiver().getPhone())
                         .address(
-                                getAddress(
-                                        editMerchandise.getReceiver().getAddress().getProvince().getName(),
-                                        editMerchandise.getReceiver().getAddress().getDistrict().getName(),
-                                        editMerchandise.getReceiver().getAddress().getWard().getName()
+                                convertAddress.getAddress(
+                                        ProvinceDto.builder()
+                                                .code(editMerchandise.getReceiver().getAddress().getProvince().getCode())
+                                                .name(editMerchandise.getReceiver().getAddress().getProvince().getName())
+                                                .build(),
+                                        DistrictDto.builder()
+                                                .code(editMerchandise.getReceiver().getAddress().getDistrict().getId())
+                                                .name(editMerchandise.getReceiver().getAddress().getDistrict().getName())
+                                                .build(),
+                                        WardDto.builder()
+                                                .code(editMerchandise.getReceiver().getAddress().getWard().getCode())
+                                                .name(editMerchandise.getReceiver().getAddress().getWard().getName())
+                                                .build()
                                 )
                         )
                         .build()
@@ -150,7 +183,7 @@ public class MerchandiseServiceImpl implements MerchandiseService {
                 Image image = Image.builder()
                         .name(photo.getOriginalFilename())
                         .type(photo.getContentType())
-                        .imageData(compressImage(photo.getBytes()))
+                        .imageData(convertImage.compressImage(photo.getBytes()))
                         .build();
                 Image imageNew = imageRepository.save(image);
                 if(Objects.equals(imageNew.getType(), "image/png")){
@@ -171,103 +204,120 @@ public class MerchandiseServiceImpl implements MerchandiseService {
         merchandiseRepository.save(merchandise);
     }
 
-    public byte[] compressImage(byte[] data) {
-        Deflater deflater = new Deflater();
-        deflater.setLevel(Deflater.BEST_COMPRESSION);
-        deflater.setInput(data);
-        deflater.finish();
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-        byte[] tmp = new byte[4*1024];
-        while (!deflater.finished()) {
-            int size = deflater.deflate(tmp);
-            outputStream.write(tmp, 0, size);
+    @Override
+    public Object updateMerchandiseOfUser(MerchandiseUpdateRequest merchandise, String id) {
+        Merchandise merchandiseOld = merchandiseRepository.findById(id).get();
+        merchandiseOld.setName(merchandise.getName());
+        merchandiseOld.setPrice(merchandise.getPrice());
+        merchandiseOld.setWeight(merchandise.getWeight());
+        merchandiseOld.setUpdatedOn(ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).toLocalDateTime());
+        if((long) merchandise.getImages().size() > 0){
+            List<Image> images = new ArrayList<>();
+            for (String imageId : merchandise.getImages()){
+                if(imageRepository.existsById(imageId)){
+                    images.add(imageRepository.findById(imageId).get());
+                }
+            }
+            for (Image image : merchandiseOld.getImages()){
+                imageRepository.deleteById(image.getId());
+            }
+            merchandiseOld.setImages(images);
+        }else{
+            merchandiseOld.setImages(merchandiseOld.getImages());
         }
-        try {
-            outputStream.close();
-        } catch (Exception ignored) {
-        }
-        return outputStream.toByteArray();
+        return convertMerchandise.mapMerchandiseToMerchandiseResponse(merchandiseRepository.save(merchandiseOld));
     }
 
-    public MerchandiseDto mapMerchandiseToMerchandiseDto(Merchandise merchandise){
-        List<byte[]> images = new ArrayList<>();
-        for(Image image : merchandise.getImages()){
-            Optional<Image> imageItem = imageRepository.findById(image.getId());
-            images.add(decompressImage(imageItem.get().getImageData()));
+    @Override
+    public Object deleteAllMerchandisesOfUser(HttpServletRequest request) {
+        return null;
+    }
+
+    @Override
+    public List<MerchandiseResponse> getAllMerchandiseOfUser(HttpServletRequest request) {
+        UserDocument user = convertUser.getUserFromToken(request);
+        List<Merchandise> merchandises = merchandiseRepository.findAllByCode(user);
+        return merchandises.stream().map(convertMerchandise::mapMerchandiseToMerchandiseResponse).collect(Collectors.toList());
+    }
+    @Override
+    public Object deleteOneMerchandiseById(String id) {
+        if (merchandiseRepository.existsById(id)){
+            Merchandise merchandise = merchandiseRepository.findById(id).get();
+            for(Image item : merchandise.getImages()){
+                imageRepository.delete(item);
+            }
+            merchandiseRepository.delete(merchandise);
+            return MessageObject.builder().message("Xóa thành công").build();
         }
-        return MerchandiseDto.builder()
-                .id(merchandise.getId())
+        return null;
+    }
+
+    @Override
+    public MerchandiseDto saveNewMerchandiseByUser(CreateMerchandise merchandise, HttpServletRequest request) {
+        UserDocument user = convertUser.getUserFromToken(request);
+        Merchandise merchandiseNew = Merchandise.builder()
                 .name(merchandise.getName())
                 .price(merchandise.getPrice())
-                .images(images)
-                .status(merchandise.getStatus())
-                .sender(merchandise.getSender())
-                .receiver(merchandise.getReceiver())
-                .createdAt(merchandise.getCreatedAt())
                 .weight(merchandise.getWeight())
-                .updatedOn(merchandise.getUpdatedOn())
+                .status("AWAITING")
+                .sender(
+                        Information.builder()
+                                .name(merchandise.getNameSender())
+                                .phone(merchandise.getPhoneSender())
+                                .address(
+                                        convertAddress.getAddress(merchandise.getProvinceSender(),merchandise.getDistrictSender(), merchandise.getWardSender())
+                                )
+                                .build()
+                )
+                .receiver(
+                        Information.builder()
+                                .name(merchandise.getNameReceiver())
+                                .phone(merchandise.getPhoneReceiver())
+                                .address(
+                                        convertAddress.getAddress(merchandise.getProvinceReceiver(), merchandise.getDistrictReceiver(), merchandise.getWardReceiver())
+                                )
+                                .build()
+                )
+                .images(convertUser.convertImageData(merchandise))
+                .code(user)
+                .createdAt(ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).toLocalDateTime())
                 .build();
+        Merchandise merchandiseObject = merchandiseRepository.save(merchandiseNew);
+        return convertMerchandise.mapMerchandiseToMerchandiseDto(merchandiseObject);
     }
-    public  byte[] decompressImage(byte[] data) {
-        Inflater inflater = new Inflater();
-        inflater.setInput(data);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-        byte[] tmp = new byte[4*1024];
-        try {
-            while (!inflater.finished()) {
-                int count = inflater.inflate(tmp);
-                outputStream.write(tmp, 0, count);
-            }
-            outputStream.close();
-        } catch (Exception ignored) {
-        }
-        return outputStream.toByteArray();
-    }
-    @NotNull
-    private Address getAddress(String provinceRoot, String districtRoot , String wardRoot) {
-        Address address = Address.builder().build();
-        if(!provinceRepository.existsByName(provinceRoot)){
-            Ward ward = Ward.builder().name(wardRoot).build();
-            Ward wardNew = wardRepository.save(ward);
-            District district = District
-                    .builder().name(districtRoot)
-                    .wards(Collections.singletonList(wardNew))
-                    .build();
-            District districtNew  = districtRepository.save(district);
-            Province province = Province.builder()
-                    .name(provinceRoot)
-                    .districts(Collections.singletonList(districtNew))
-                    .build();
-            Province provinceNew = provinceRepository.save(province);
-            address.setWard(wardNew);
-            address.setDistrict(districtNew);
-            address.setProvince(provinceNew);
-        }else if (!districtRepository.existsByName(districtRoot)){
-            Ward ward = Ward.builder().name(wardRoot).build();
-            Ward wardNew = wardRepository.save(ward);
-            District district = District
-                    .builder().name(districtRoot)
-                    .wards(Collections.singletonList(wardNew))
-                    .build();
-            District districtNew  = districtRepository.save(district);
-            Province province = provinceRepository.findByName(provinceRoot).get();
-            province.getDistricts().add(districtNew);
-            Province provinceNew = provinceRepository.save(province);
-            address.setWard(wardNew);
-            address.setDistrict(districtNew);
-            address.setProvince(provinceNew);
+
+    @Override
+    public Object updateMerchandiseAddressByUser(String id, InformationRequest informationRequest) {
+        Merchandise merchandiseOld = merchandiseRepository.findById(id).get();
+
+        Address address = convertAddress.getAddressTow(
+                ProvinceDto.builder()
+                        .name(informationRequest.getProvince())
+                        .code(informationRequest.getProvinceCode())
+                        .build(),
+                DistrictDto.builder()
+                        .name(informationRequest.getDistrict())
+                        .code(informationRequest.getDistrictCode())
+                        .build(),
+                WardDto.builder()
+                        .name(informationRequest.getWard())
+                        .code(informationRequest.getWardCode())
+                        .build()
+        );
+
+        if(Objects.equals(informationRequest.getType(), "sender")){
+            Information sender = merchandiseOld.getSender();
+            sender.setName(informationRequest.getName());
+            sender.setPhone(informationRequest.getPhone());
+            sender.setAddress(address);
+            merchandiseOld.setSender(sender);
         }else{
-            Ward ward = Ward.builder().name(wardRoot).build();
-            Ward wardNew = wardRepository.save(ward);
-            District district = districtRepository.findByName(districtRoot).get();
-            district.getWards().add(wardNew);
-            District districtNew = districtRepository.save(district);
-            Province province = provinceRepository.findByName(provinceRoot).get();
-            address.setWard(wardNew);
-            address.setDistrict(districtNew);
-            address.setProvince(province);
+            Information receiver = merchandiseOld.getReceiver();
+            receiver.setName(informationRequest.getName());
+            receiver.setPhone(informationRequest.getPhone());
+            receiver.setAddress(address);
+            merchandiseOld.setReceiver(receiver);
         }
-        return address;
+        return merchandiseRepository.save(merchandiseOld);
     }
 }

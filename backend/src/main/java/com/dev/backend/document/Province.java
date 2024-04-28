@@ -18,6 +18,7 @@ import java.util.List;
 public class Province {
     @Id
     private String id;
+    private String code;
     private String name;
     @DBRef
     private List<District> districts;

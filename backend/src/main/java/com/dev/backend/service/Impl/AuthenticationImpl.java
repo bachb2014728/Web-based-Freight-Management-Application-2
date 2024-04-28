@@ -6,6 +6,7 @@ import com.dev.backend.document.UserDocument;
 import com.dev.backend.error.IncorrectPasswordException;
 import com.dev.backend.error.ServerErrorException;
 import com.dev.backend.error.UserAlreadyExistException;
+import com.dev.backend.error.UsernameNotFoundException;
 import com.dev.backend.jwt.JwtAuthenticationResponse;
 import com.dev.backend.jwt.JwtService;
 import com.dev.backend.jwt.Token;
@@ -76,8 +77,12 @@ public class AuthenticationImpl implements Authentication {
     @Override
     public JwtAuthenticationResponse logIn(LogInRequest logInRequest) {
         try {
+            UserDocument user = userRepository.findByEmail(logInRequest.getEmail())
+                    .orElseThrow(
+                            () -> new UsernameNotFoundException("username not found")
+                    );
             manager.authenticate(new UsernamePasswordAuthenticationToken(logInRequest.getEmail(),logInRequest.getPassword()));
-            UserDocument user = userRepository.findByEmail(logInRequest.getEmail()).orElseThrow();
+
             var jwt = jwtService.generateToken(new CustomUserDetails(user));
             var refreshToken = jwtService.generateRefreshToken(new HashMap<>(),new CustomUserDetails(user));
             JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();

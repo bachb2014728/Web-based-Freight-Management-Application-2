@@ -1,7 +1,9 @@
 package com.dev.backend.advide;
 
+import com.dev.backend.document.Employee;
 import com.dev.backend.document.Role;
 import com.dev.backend.document.UserDocument;
+import com.dev.backend.repository.EmployeeRepository;
 import com.dev.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -15,10 +17,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GlobalControllerAdvice {
     private final UserRepository userRepository;
+    private final EmployeeRepository employeeRepository;
     @ModelAttribute("username")
     public String getUsername(Principal principal) {
         return (principal != null) ? principal.getName() : "";
     }
+//    @ModelAttribute("name")
+//    public String getName(Principal principal){
+//        if (principal == null) {
+//            return "";
+//        }
+//        UserDocument user = userRepository.findByEmail(principal.getName()).orElse(null);
+//        Employee employee = employeeRepository.findByUser(user);
+//        return employee.getLastName();
+//    }
     @ModelAttribute("role")
     public String getRole(Principal principal){
         if (principal == null) {
@@ -30,7 +42,7 @@ public class GlobalControllerAdvice {
             for (Role item : user.getRoles()){
                 roles.add(item.getName());
             }
-            return roles.toString();
+            return "Vai trò : " + roles.toString();
         }
         return "";
     }

@@ -3,7 +3,7 @@ package com.dev.backend.service.Impl;
 import com.dev.backend.document.*;
 import com.dev.backend.repository.*;
 import com.dev.backend.service.EmployeeService;
-import com.dev.backend.web.dto.Address;
+import com.dev.backend.web.dto.location.Address;
 import com.dev.backend.web.dto.CreateEmployee;
 import com.dev.backend.web.dto.EmployeeDto;
 import lombok.RequiredArgsConstructor;

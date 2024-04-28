@@ -1,6 +1,6 @@
 package com.dev.backend.document;
 
-import com.dev.backend.web.dto.Information;
+import com.dev.backend.web.dto.location.Information;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +22,8 @@ import java.util.List;
 public class Merchandise {
     @Id
     private String id;
+    @DBRef
+    private UserDocument code;
     private String name;
     @DBRef
     private List<Image> images;

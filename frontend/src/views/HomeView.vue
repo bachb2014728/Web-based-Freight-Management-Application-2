@@ -1,5 +1,5 @@
 <template>
-  <div class="container mt-5 text-center">
+  <div class="container text-center">
     <div class="card">
       <div class="card-body">
         <ul class="nav nav-pills mb-3 d-flex justify-content-between" role="tablist">

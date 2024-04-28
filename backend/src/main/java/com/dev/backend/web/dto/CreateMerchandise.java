@@ -1,6 +1,9 @@
 package com.dev.backend.web.dto;
 
 import com.dev.backend.document.Image;
+import com.dev.backend.web.dto.location.DistrictDto;
+import com.dev.backend.web.dto.location.ProvinceDto;
+import com.dev.backend.web.dto.location.WardDto;
 import lombok.Builder;
 import lombok.Data;
 
@@ -16,12 +19,12 @@ public class CreateMerchandise {
     private double weight;
     private String nameSender;
     private String phoneSender;
-    private String provinceSender;
-    private String districtSender;
-    private String wardSender;
+    private ProvinceDto provinceSender;
+    private DistrictDto districtSender;
+    private WardDto wardSender;
     private String nameReceiver;
     private String phoneReceiver;
-    private String provinceReceiver;
-    private String districtReceiver;
-    private String wardReceiver;
+    private ProvinceDto provinceReceiver;
+    private DistrictDto districtReceiver;
+    private WardDto wardReceiver;
 }

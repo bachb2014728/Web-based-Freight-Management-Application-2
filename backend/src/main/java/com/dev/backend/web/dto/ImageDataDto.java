@@ -5,8 +5,9 @@ import lombok.Data;
 
 @Data
 @Builder
-public class Information {
+public class ImageDataDto {
+    private String id;
     private String name;
-    private String phone;
-    private Address address;
+    private String type;
+    private byte[] imageData;
 }

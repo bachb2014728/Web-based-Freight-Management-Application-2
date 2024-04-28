@@ -1,5 +1,6 @@
 package com.dev.backend.document;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,5 +22,6 @@ public class Role {
     private String name;
     private List<String> privileges;
     @DBRef
+    @JsonBackReference
     private List<UserDocument> users;
 }

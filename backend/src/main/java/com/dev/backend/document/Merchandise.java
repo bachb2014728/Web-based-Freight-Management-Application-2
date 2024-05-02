@@ -22,10 +22,10 @@ import java.util.List;
 public class Merchandise {
     @Id
     private String id;
-    @DBRef
+    @DBRef(lazy = true)
     private UserDocument code;
     private String name;
-    @DBRef
+    @DBRef(lazy = true)
     private List<Image> images;
     private double price;
     private double weight;
@@ -36,4 +36,6 @@ public class Merchandise {
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime updatedOn;
+    @DBRef(lazy = true)
+    private Store store;
 }

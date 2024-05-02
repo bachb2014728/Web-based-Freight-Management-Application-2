@@ -19,6 +19,7 @@ public class Store {
     private String name;
     private String phone;
     private String address;
+    private String province;
     @DBRef
     private Employee employee;
 }

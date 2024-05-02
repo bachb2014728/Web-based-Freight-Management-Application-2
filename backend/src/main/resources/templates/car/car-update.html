@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/app.html}">
+<head>
+  <title>Cập nhật xe vận tải</title>
+</head>
+<body>
+<header class="pagetitle" layout:fragment="custom-header">
+  <h1 class="label">Quản lý xe</h1>
+  <nav>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a th:href="@{/dashboard}">Trang chủ</a></li>
+      <li class="breadcrumb-item"><a th:href="@{/cars}">Danh sách</a></li>
+      <li class="breadcrumb-item active">Cập nhật xe vận tải</li>
+    </ol>
+  </nav>
+</header>
+<section layout:fragment="custom-content">
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Thông tin xe vận tải</h5>
+      <form class="row g-3" th:action="@{/cars/__${car.id}__/update}" method="post" th:object="${car}">
+        <input type="hidden" name="isEnabled" th:value="true">
+        <div class="row mb-3">
+          <div class="col-sm">
+            <label for="licensePlate" class="form-label">Biển số xe</label>
+            <input type="text" class="form-control"
+                   id="licensePlate" name="licensePlate" th:field="*{licensePlate}"
+                   th:value="${car.licensePlate}">
+          </div>
+          <div class="col-sm">
+            <label for="status" class="form-label">Trạng thái</label>
+            <select class="form-select" id="status" name="status" th:field="*{status}">
+              <option value="" selected="">Chọn trạng thái</option>
+              <option value="Available">Sẵn sàng</option>
+              <option value="In Use">Đang dùng</option>
+              <option value="Maintenance">Bảo trì</option>
+            </select>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-sm">
+            <label for="load" class="form-label">Trọng tải hiện tại</label>
+            <input type="number" class="form-control" id="load"
+                   name="load" th:field="*{load}" th:value="${car.load}">
+          </div>
+          <div class="col-sm">
+            <label for="capacity" class="form-label">Trọng tải tối đa</label>
+            <input type="text" class="form-control"
+                   id="capacity" name="capacity" th:field="*{capacity}" th:value="${car.capacity}">
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-sm">
+            <label for="address" class="form-label">Vị trí hiện tại</label>
+            <input type="text" class="form-control"
+                   id="address" name="address" th:field="*{address}" th:value="${car.address}">
+          </div>
+        </div>
+
+        <div class="text-center">
+          <button type="submit" class="btn btn-primary">Cập nhật xe vận tải</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+<div layout:fragment="custom-javascript">
+</div>
+</body>
+</html>

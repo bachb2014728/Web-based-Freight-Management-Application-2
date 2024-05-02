@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/app.html}">
+<head>
+    <title>Quản lý kho</title>
+</head>
+<body>
+<header class="pagetitle" layout:fragment="custom-header">
+    <h1 class="label">Quản lý kho</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/dashboard}">Trang chủ</a></li>
+            <li class="breadcrumb-item active">Kho</li>
+        </ol>
+    </nav>
+</header>
+<section layout:fragment="custom-content">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Danh sách package</h5>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Loại</th>
+                    <th scope="col">TTL</th>
+                    <th scope="col">TGT</th>
+                    <th scope="col">Nơi đến</th>
+                    <th scope="col">Hàng hóa</th>
+                    <th>Trạng thái</th>
+                    <th scope="col">Chức năng</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item,index : ${batches}">
+                    <td th:text="${index.index + 1}"></td>
+                    <td th:text="${item.type}"></td>
+                    <td th:text="${@formatUtil.formatWeight(item.totalWeight)}"></td>
+                    <td th:text="${@formatUtil.formatCurrency(item.totalPrice)}"></td>
+                    <td th:text="${item.destinationStore.name}"></td>
+                    <td>
+                        <div th:each="good : ${item.merchandises}">
+                            <span th:text="${good.name}"></span><br>
+                            <span th:text="${good.weight +' x ' + good.price}"></span><br>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge bg-info" th:text="${item.status}"></span>
+                    </td>
+                    <td>
+                        <div th:if="${item.status =='PREPARING' || item.status=='PENDING'}">
+                            <a th:href="@{'/batches/'+${item.id}+'/edit'}" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
+                            <a th:href="@{'/batches/'+${item.id}+'/delete'}" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
+                        </div>
+                        <span th:if="${item.status =='AWAITING_EXPORT'}" th:text="${'Không thế chỉnh sửa'}"></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+<div layout:fragment="custom-javascript">
+</div>
+</body>
+</html>

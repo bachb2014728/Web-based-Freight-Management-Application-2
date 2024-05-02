@@ -11,8 +11,15 @@
             <img :src="'data:image/jpeg;base64,' + image" alt="" style="height: 5rem" @click="changeBackground(image)">
           </div>
         </div>
-        <p class="card-text">Trọng lượng : {{item.weight}}</p>
-        <p class="card-text">Giá thu hộ : {{item.price}}</p>
+        <p class="text-center">
+          <span class="badge bg-primary" v-if="item.status === 'PROCESSING' ">{{item.status}}</span>
+          <span class="badge bg-secondary" v-if="item.status === 'ARCHIVE' ">{{item.status}}</span>
+          <span class="badge bg-success" v-if="item.status === 'PENDING' ">{{item.status}}</span>
+        </p>
+        <p class="d-flex justify-content-between">
+          <span>Trọng lượng : {{item.weight}}</span>
+          <span>Giá thu hộ : {{item.price}}</span>
+        </p>
         <p class="card-text">
           Thông tin người gửi :
           <ul>
@@ -32,7 +39,11 @@
         <p class="card-text"></p>
       </div>
       <div class="card-footer text-center">
-        <button  @click="deleteItem(item)" class="btn btn-secondary btn-sm me-3">Xóa</button>
+        <button @click="deleteItem(item)"
+            class="btn btn-secondary btn-sm me-3" v-if="item.status === 'ARCHIVE' || item.status === 'PROCESSING' ">
+          Xóa
+        </button>
+<!--        <span class="badge bg-success" v-if="item.status === 'PENDING' ">{{item.status}}</span>-->
       </div>
     </div>
 

@@ -7,99 +7,43 @@
 </head>
 <body>
 <header class="pagetitle" layout:fragment="custom-header">
-    <h1 class="label">Dashboard</h1>
+    <h1 class="label">Hàng hóa được gởi về</h1>
 </header>
 <section layout:fragment="custom-content">
-    <div class="container">
-        <select id="provinces">
-            <!-- Options will be filled by JavaScript -->
-        </select>
-        <select id="districts">
-            <!-- Options will be filled by JavaScript -->
-        </select>
-        <select id="wards">
-            <!-- Options will be filled by JavaScript -->
-        </select>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Danh sách</h5>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">Mã chuyến đi</th>
+                    <th scope="col">Thông tin chuyến đi</th>
+                    <th scope="col">Tổng trọng lượng</th>
+                    <th scope="col">Cửa hàng gửi</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col">Duyệt</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item,index : ${shipments}">
+                    <td th:text="${item.id}"></td>
+                    <td th:text="'Tuyến đường : '+${item.router.name} + ', Tài xế : '+${item.driver.name}"></td>
+                    <td th:text="${@formatUtil.formatWeight(item.totalWeight)}"></td>
+                    <td th:text="${item.sendingStore.name}"></td>
+                    <td >
+                        <span class="badge bg-info" th:text="${item.status}"></span>
+                    </td>
+                    <td >
+                        <a th:if="${item.status == 'IN_TRANSIT'} " th:href="@{'/shipments/'+${item.id}+'/accept'}" class="btn btn-sm btn-warning">Chấp nhập</i></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </section>
 <div layout:fragment="custom-javascript">
-    <script>
-        const host = 'https://vnprovinces.pythonanywhere.com/api/provinces';
 
-        function fetchData(api, selectId) {
-            axios.get(api)
-                .then(response => {
-                    const data = response.data.results;
-                    const select = document.getElementById(selectId);
-
-                    // Clear previous options
-                    select.innerHTML = '';
-
-                    data.forEach(item => {
-                        const option = document.createElement('option');
-                        option.value = item.name;
-                        option.id = item.id;
-                        option.text = item.name;
-                        select.add(option);
-                    });
-                })
-                .catch(error => console.error(error));
-        }
-        function fetchDistricts(api, selectId) {
-            axios.get(api)
-                .then(response => {
-                    const data = response.data.districts;
-                    const select = document.getElementById(selectId);
-
-                    // Clear previous options
-                    select.innerHTML = '';
-
-                    data.forEach(item => {
-                        const option = document.createElement('option');
-                        option.value = item.name;
-                        option.id = item.id;
-                        option.text = item.name;
-                        select.add(option);
-                    });
-                })
-                .catch(error => console.error(error));
-        }
-        function fetchWards(api, selectId) {
-            axios.get(api)
-                .then(response => {
-                    const data = response.data.wards;
-                    const select = document.getElementById(selectId);
-
-                    // Clear previous options
-                    select.innerHTML = '';
-
-                    data.forEach(item => {
-                        const option = document.createElement('option');
-                        option.value = item.name;
-                        option.id = item.id;
-                        option.text = item.name;
-                        select.add(option);
-                    });
-                })
-                .catch(error => console.error(error));
-        }
-
-        document.getElementById('provinces').addEventListener('change', function() {
-            const selectedOption = this.options[this.selectedIndex];
-            const provinceId = selectedOption.getAttribute('id');
-            fetchDistricts(`${host}/${provinceId}`, 'districts');
-            // Clear wards
-            document.getElementById('wards').innerHTML = '';
-        });
-
-        document.getElementById('districts').addEventListener('change', function() {
-            const selectedOption = this.options[this.selectedIndex];
-            const districtId = selectedOption.getAttribute('id');
-            fetchWards(`https://vnprovinces.pythonanywhere.com/api/districts/${districtId}`, 'wards');
-        });
-
-        fetchData(`${host}?basic=true&limit=100`, 'provinces');
-    </script>
 </div>
 </body>
 </html>

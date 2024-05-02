@@ -1,8 +1,8 @@
 package com.dev.backend.web.controller;
 
 import com.dev.backend.service.MerchandiseService;
-import com.dev.backend.web.dto.CreateMerchandise;
 import com.dev.backend.web.dto.EditMerchandise;
+import com.dev.backend.web.dto.MerchandiseCreate;
 import com.dev.backend.web.dto.MerchandiseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -19,21 +20,22 @@ import java.util.List;
 public class MerchandiseController {
     private final MerchandiseService merchandiseService;
     @GetMapping("")
-    public String getAllMerchandise(Model model){
-        List<MerchandiseDto> merchandises = merchandiseService.getAllMerchandise();
+    public String getAllMerchandise(Model model, Principal principal){
+        List<MerchandiseDto> merchandises = merchandiseService.getAllMerchandise(principal);
         model.addAttribute("merchandises",merchandises);
         return "/merchandise/merchandise-list";
     }
     @GetMapping("/create")
     public String createNewMerchandise(Model model){
-        CreateMerchandise merchandise = CreateMerchandise.builder().build();
+        MerchandiseCreate merchandise = MerchandiseCreate.builder().build();
         model.addAttribute("merchandise" ,merchandise);
         return "/merchandise/merchandise-create";
     }
     @PostMapping("/save")
-    public String saveMerchandise(@ModelAttribute("merchandise") CreateMerchandise merchandise,
-                                  @RequestParam("photos") MultipartFile[] photos ) throws IOException {
-        merchandiseService.saveNewMerchandise(merchandise,photos);
+    public String saveMerchandise(@ModelAttribute("merchandise") MerchandiseCreate merchandise,
+                                  @RequestParam("photos") MultipartFile[] photos
+    ) throws IOException {
+//        merchandiseService.saveNewMerchandise(merchandise,photos);
         return "redirect:/merchandises";
     }
     @GetMapping("/{id}")

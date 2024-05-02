@@ -1,5 +1,7 @@
 package com.dev.backend.web.dto;
 
+import com.dev.backend.document.Store;
+import com.dev.backend.document.UserDocument;
 import com.dev.backend.web.dto.location.Information;
 import lombok.Builder;
 import lombok.Data;
@@ -20,4 +22,7 @@ public class MerchandiseDto {
     private Information receiver; //người nhận
     private LocalDateTime createdAt;
     private LocalDateTime updatedOn;
+    private UserDocument code;
+    private Store store;
+
 }

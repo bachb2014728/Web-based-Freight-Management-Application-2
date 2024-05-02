@@ -55,13 +55,18 @@
                         </div>
                         <label for="addressStart" class="form-label">Địa chỉ</label>
                         <div id="addressStart">
-                            <select id="provincesStart" name="provinceSender" class="form-select mb-3" th:field="*{provinceSender}">
+                            <select id="provincesStart" name="provinceSender" class="form-select mb-3" th:field="*{province}">
+
                                 <option value="" selected>Chọn tỉnh thành</option>
                             </select>
-                            <select id="districtsStart" name="districtSender" class="form-select mb-3" th:field="*{districtSender}">
+                            <select id="districtsStart" name="districtSender" class="form-select mb-3">
+<!--                                    th:field="*{districtSender}"-->
+
                                 <option value="" selected>Chọn quận huyện</option>
                             </select>
-                            <select id="wardsStart" name="wardSender" class="form-select mb-3" th:field="*{wardSender}">
+                            <select id="wardsStart" name="wardSender" class="form-select mb-3">
+<!--                                    th:field="*{wardSender}"-->
+
                                 <option value="" selected>Chọn phường xã</option>
                             </select>
 
@@ -79,13 +84,17 @@
                         </div>
                         <label for="addressEnd" class="form-label">Địa chỉ</label>
                         <div id="addressEnd">
-                            <select id="provincesEnd" name="province" class="form-select mb-3" th:field="*{provinceReceiver}">
+                            <select id="provincesEnd" name="province" class="form-select mb-3">
+<!--                                    th:field="*{provinceReceiver}"-->
                                 <option value="" selected>Chọn tỉnh thành</option>
                             </select>
-                            <select id="districtsEnd" name="district" class="form-select mb-3" th:field="*{districtReceiver}">
+                            <select id="districtsEnd" name="district" class="form-select mb-3">
+<!--                                    th:field="*{districtReceiver}"-->
+
                                 <option value="" selected>Chọn quận huyện</option>
                             </select>
-                            <select id="wardsEnd" name="ward" class="form-select mb-3" th:field="*{wardReceiver}">
+                            <select id="wardsEnd" name="ward" class="form-select mb-3">
+<!--                                    th:field="*{wardReceiver}"-->
                                 <option value="" selected>Chọn phường xã</option>
                             </select>
                         </div>
@@ -94,14 +103,13 @@
 
                 <div class="text-center">
                     <button type="submit" class="btn btn-primary">Thêm hàng hóa</button>
-                    <button type="reset" class="btn btn-secondary">Reset</button>
                 </div>
             </form>
         </div>
     </div>
 </section>
 <div layout:fragment="custom-javascript">
-    <script th:src="@{/js/getLocation.js}"></script>
+    <script th:src="@{/js/getLocation-2.js}"></script>
 </div>
 </body>
 </html>

@@ -31,8 +31,8 @@
                 </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="merchandise : ${merchandises}" class="text-center">
-                        <td th:text="${merchandise.id}"></td>
+                    <tr th:each="merchandise, index : ${merchandises}" class="text-center">
+                        <td th:text="${index.index + 1}"></td>
                         <td th:text="${merchandise.name}"></td>
                         <td>
                             <img th:src="${@imageUtil.convertToBase64String(merchandise.images[0])}" alt="" style="width: 5rem">
@@ -40,12 +40,14 @@
                         <td th:text="${@formatUtil.formatCurrency(merchandise.price)}"></td>
                         <td th:text="${@formatUtil.formatWeight(merchandise.weight)}"></td>
                         <td >
-                            <span th:if="${merchandise.status}"  class="badge text-bg-success">đợi lấy hàng</span>
-                            <span th:unless="${merchandise.status}"  class="badge text-bg-danger">lưu trữ</span>
+                            <span th:if="${merchandise.status == 'PROCESSING'}">
+                                <p th:text="${merchandise.status}"  class="badge text-bg-success"></p>
+                            </span>
+<!--                            <span th:unless="${merchandise.status}"  class="badge text-bg-danger">lưu trữ</span>-->
                         </td>
                         <td>
                             <a th:href="@{'/merchandises/'+${merchandise.id}}" class="btn btn-sm btn-secondary"><i class="bi bi-search"></i></a>
-                            <a th:href="@{'/merchandises/'+${merchandise.id}+'/edit'}" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
+                            <a th:if="${merchandise.code.roles[0].name != 'USER'}"  th:href="@{'/merchandises/'+${merchandise.id}+'/edit'}" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
                             <a th:href="@{'/merchandises/'+${merchandise.id}+'/delete'}" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
                         </td>
                     </tr>
@@ -55,6 +57,7 @@
     </div>
 </section>
 <div layout:fragment="custom-javascript">
+
 </div>
 </body>
 </html>

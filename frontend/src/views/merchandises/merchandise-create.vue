@@ -17,6 +17,13 @@
             <label for="image" class="form-label">Hình ảnh</label>
             <input type="file" id="image" name="photos"  class="form-control" @change="onFileChange"  multiple>
           </div>
+          <div class="col-sm">
+            <label for="store" class="form-label">Chọn cửa hàng</label>
+            <select id="store" name="store" class="form-select mb-3" v-model="newItem.store">
+              <option value="" disabled selected>Chọn cửa hàng</option>
+              <option v-for="(store, index) in stores" :value="store.id" :key="index">{{ store.name }}</option>
+            </select>
+          </div>
         </div>
         <div class="row mb-3">
           <div class="col-sm">
@@ -34,9 +41,9 @@
           <div class="col-sm">
             <label for="status" class="form-label">Trạng thái</label>
             <select id="status" name="status" class="form-select mb-3" v-model="newItem.status" >
-              <option value="AWAITING" disabled selected>Chọn trạng thái</option>
-              <option value="AWAITING" id="awaiting">Chờ đợi</option>
-              <option value="PROGRESS" id="progress">Yêu cầu</option>
+              <option value="" disabled selected>Chọn trạng thái</option>
+              <option value="ARCHIVE" id="awaiting">Lưu trữ</option>
+              <option value="PROCESSING" id="progress">Yêu cầu</option>
             </select>
           </div>
         </div>
@@ -61,13 +68,23 @@
 <script>
 import axios from "axios";
 import LocationComponent from "@/components/LocationComponent.vue";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import CustomerService from "@/services/customer.service.js";
 
 export default {
   name: "merchandise-create",
   mounted(){
     document.title = 'Thêm hàng hóa';
+  },
+  setup(){
+    const stores = ref([]);
+    onMounted(async ()=>{
+      const response = await axios.get('http://localhost:8000/api/v1/stores');
+      stores.value = response.data
+    });
+    return{
+      stores
+    }
   },
   components:{
     LocationComponent
@@ -77,7 +94,7 @@ export default {
       selectedFile: '', resultMessage: '', images: [], uploadImage: [],
       sender:'Sender', receiver:'Receiver',
       newItem: {
-        name: '', weight: '', images: '', price: '',status:'',
+        name: '', weight: '', images: '', price: '',status:'', store:'',
         nameSender: '', phoneSender:'', provinceSender:'', districtSender:'', wardSender:'',
         nameReceiver:'',phoneReceiver:'', provinceReceiver:'', districtReceiver:'', wardReceiver:''
       },
@@ -117,36 +134,36 @@ export default {
       if (!this.newItem.price) {
         this.errors.price = 'Giá trị không được để trống';
       }
-      console.log(this.errors);
       if (Object.keys(this.errors).length > 0) {
         return;
       }
-      try {
-        const token = localStorage.getItem('token');
-        for (const file of this.selectedFiles) {
-          const index = this.selectedFiles.indexOf(file);
-          let formData = new FormData();
-          formData.append("image", file);
-          let response = await axios.post('http://localhost:8000/api/v1/uploadToMongoDB', formData, {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-            }
-          });
-          if (response.status === 200) {
-            console.log(response.data)
-            this.uploadImage[index] = response.data.id;
-          } else {
-            this.resultMessage = { type: 'error', message: response.data.message };
-            this.clearMessageAfterDelay();
+      const token = localStorage.getItem('token');
+      for (const file of this.selectedFiles) {
+        const index = this.selectedFiles.indexOf(file);
+        let formData = new FormData();
+        formData.append("image", file);
+        let response = await axios.post('http://localhost:8000/api/v1/uploadToMongoDB', formData, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
           }
+        });
+        if (response.status === 200) {
+          console.log(response.data)
+          this.uploadImage[index] = response.data.id;
+        } else {
+          this.resultMessage = { type: 'error', message: response.data.message };
+          this.clearMessageAfterDelay();
         }
-        this.newItem.images=(this.uploadImage);
-        await this.createItem();
-      } catch (error) {
-        console.error('Lỗi không tải được ảnh:', error.message);
-        this.resultMessage = { type: 'error', message: error.message };
-        this.clearMessageAfterDelay();
       }
+      this.newItem.images=(this.uploadImage);
+      await this.createItem();
+      // try {
+      //
+      // } catch (error) {
+      //   console.error('Lỗi không tải được ảnh:', error.message);
+      //   this.resultMessage = { type: 'error', message: error.message };
+      //   this.clearMessageAfterDelay();
+      // }
     },
     async createItem() {
       const token = localStorage.getItem('token');

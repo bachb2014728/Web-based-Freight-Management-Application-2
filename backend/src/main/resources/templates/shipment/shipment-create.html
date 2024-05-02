@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/app.html}">
+<head>
+    <title>Tạo chuyến đi</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+</head>
+<body>
+<header class="pagetitle" layout:fragment="custom-header">
+    <h1>Quản lý chuyến đi</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/dashboard}">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/shipments}">Danh sách</a></li>
+            <li class="breadcrumb-item active">Tạo chuyến đi</li>
+        </ol>
+    </nav>
+</header>
+<section layout:fragment="custom-content">
+    <div class="card" th:each="item : ${data}">
+        <div  class="card-body" >
+            <h5 class="card-title"><span th:text="${item.name}"></span></h5>
+            <form th:if="${item.shipment}">
+                <ol class="list-group list-group-numbered mb-3">
+                    <li class="list-group-item d-flex justify-content-between" th:each="batch : ${item.shipment.batches}">
+                        <span th:text="${batch.type}"></span>
+                        <span th:text="${@formatUtil.formatCurrency(batch.totalPrice)}"></span>
+                        <span th:text="${@formatUtil.formatWeight(batch.totalWeight)}"></span>
+                        <a class="btn btn-sm btn-warning" th:href="@{/shipments/__${item.shipment.id}__/__${batch.id}__/delete}">Bỏ</a>
+                    </li>
+                </ol>
+            </form>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <span id="quantity" th:if="${item.shipment.batches != null}" th:text="'Số lượng : ' +${item.shipment.batches.size()}"></span>
+            <div>
+                <a id="addShipmentButton" th:href="@{/shipments/__${item.shipment.id}__/add}" class="btn btn-sm btn-secondary" >Tạo chuyến đi</a>
+                <a th:href="@{/shipments/__${item.shipment.id}__/batch/add}" class="btn btn-sm btn-info text-light ">Thêm lô hàng</a>
+            </div>
+            <span th:text="'Tổng trọng lượng : '+  ${@formatUtil.calculateTotalWeight(item.shipment.batches)}"></span>
+        </div>
+        <div class="card-footer" th:if="${item.shipment == null}">
+            <span >Không có lô hàng nào</span>
+        </div>
+    </div>
+</section>
+<div layout:fragment="custom-javascript">
+    <script>
+        document.getElementById('addShipmentButton').addEventListener('click', function(event) {
+            var quantityText = document.getElementById('quantity').innerText;
+            var quantity = parseInt(quantityText.split(':')[1].trim());
+            if (quantity === 0) {
+                event.preventDefault();
+                alert('Không thể thêm chuyến đi vì không tồn tại bất kì lô hàng nào');
+            }
+        });
+    </script>
+</div>
+</body>
+</html>

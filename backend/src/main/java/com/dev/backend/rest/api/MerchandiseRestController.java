@@ -7,6 +7,7 @@ import com.dev.backend.service.MerchandiseService;
 import com.dev.backend.web.dto.CreateMerchandise;
 import com.dev.backend.web.dto.EditMerchandise;
 import com.dev.backend.web.dto.MerchandiseDto;
+import com.dev.backend.web.dto.MerchandiseUserDto;
 import com.dev.backend.web.dto.location.Information;
 import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,8 +40,8 @@ public class MerchandiseRestController {
         return ResponseEntity.ok(merchandiseService.saveNewMerchandiseByUser(merchandise,request));
     }
     @GetMapping("/{merchandiseId}")
-    public ResponseEntity<MerchandiseDto> getOneMerchandise(@PathVariable("merchandiseId") String id){
-        return ResponseEntity.ok(merchandiseService.getOneMerchandise(id));
+    public ResponseEntity<MerchandiseUserDto> getOneMerchandise(@PathVariable("merchandiseId") String id){
+        return ResponseEntity.ok(merchandiseService.getOneMerchandiseByUser(id));
     }
     @PutMapping("/{merchandiseId}")
     public ResponseEntity<?> updateOneMerchandise(

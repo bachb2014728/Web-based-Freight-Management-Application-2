@@ -34,13 +34,30 @@
                 <div class="text-danger">{{ errors.price }}</div>
               </div>
             </div>
-            <div class="row mb-4">
+            <div class="row mb-3">
+              <div class="col-sm">
+                <label for="status" class="form-label">Trạng thái</label>
+                <select id="status" name="status" class="form-select mb-3" v-model="merchandiseUpdate.status" >
+                  <option value="" disabled selected>Chọn trạng thái</option>
+                  <option value="ARCHIVE" id="awaiting">Lưu trữ</option>
+                  <option value="PROCESSING" id="progress">Yêu cầu</option>
+                </select>
+              </div>
+              <div class="col-sm">
+                <label for="store" class="form-label">Cửa hàng</label>
+                <select id="store" name="store" class="form-select mb-3" v-model="merchandiseUpdate.store">
+                  <option value="" disabled selected>Chọn cửa hàng</option>
+                  <option v-for="(store, index) in stores" :value="store.id" :key="index">{{ store.name }}</option>
+                </select>
+              </div>
+            </div>
+            <div class="row mb-3">
               <div class="col-sm">
                 <label for="image" class="form-label">Hình ảnh</label>
                 <input type="file" id="image" name="photos"  class="form-control" @change="onFileChange"  multiple>
               </div>
             </div>
-            <div class="row mb-4">
+            <div class="row mb-3">
               <div class="image-container">
                 <div v-for="(image, index) in merchandise.images" :key="index">
                   <img :src="'data:image/jpeg;base64,' + image" alt="" style="height: 5rem" class="g-3">
@@ -96,6 +113,7 @@ export default {
     const route = useRoute();
     const sender = ref('sender')
     const receiver = ref('receiver')
+    const stores = ref([]);
     onMounted(async () => {
       const idProduct = route.params.id;
       const response = await MerchandiseService.getOneMerchandise(idProduct);
@@ -103,9 +121,11 @@ export default {
       console.log(response)
       merchandise.value = response.data;
       merchandiseUpdate.value = {...merchandise.value};
+      const responseStore = await axios.get('http://localhost:8000/api/v1/stores');
+      stores.value = responseStore.data
     })
     return{
-      receiver, sender, merchandise, selectedFiles, merchandiseUpdate,
+      receiver, sender, merchandise, selectedFiles, merchandiseUpdate,stores
     }
   },
   data() {
@@ -169,6 +189,7 @@ export default {
 
     },
     async updateItem() {
+      console.log(this.merchandiseUpdate)
       const response = await MerchandiseService.updateOneMerchandise(this.merchandiseUpdate.id,this.merchandiseUpdate)
       if (response.status === 200) {
         this.resultMessage = { type: 'success', message: 'Cập nhật hàng hóa thành công' };
@@ -192,7 +213,7 @@ export default {
 </script>
 <style scoped>
 .card{
-  height: 30rem;
+  height: auto;
 }
 .image-container {
   display: flex;

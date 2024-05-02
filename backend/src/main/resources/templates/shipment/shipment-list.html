@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/app.html}">
+<head>
+    <title>Danh sách chuyến đi</title>
+</head>
+<body>
+<header class="pagetitle" layout:fragment="custom-header">
+    <h1 class="label">Quản lý chuyển đi</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/dashboard}">Trang chủ</a></li>
+            <li class="breadcrumb-item active">Danh sách</li>
+        </ol>
+    </nav>
+</header>
+<section layout:fragment="custom-content">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Danh sách chuyến đi</h5>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">Mã chuyến đi</th>
+                    <th scope="col">Thông tin chuyến đi</th>
+                    <th scope="col">Tổng trọng lượng</th>
+                    <th scope="col">Cửa hàng nhận</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col">Chức năng</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item,index : ${shipments}">
+                    <td th:text="${item.id}"></td>
+                    <td th:text="'Tuyến đường : '+${item.router.name} + ', Tài xế : '+${item.driver.name}"></td>
+                    <td th:text="${@formatUtil.formatWeight(item.totalWeight)}"></td>
+                    <td th:text="${item.receivingStore.name}"></td>
+                    <td >
+                        <span class="badge bg-info" th:text="${item.status}"></span>
+                    </td>
+                    <td>
+                        <a th:href="@{'/shipments/'+${item.id}+'/edit'}" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
+                        <a th:href="@{'/shipment/'+${item.id}+'/delete'}" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+</body>
+</html>

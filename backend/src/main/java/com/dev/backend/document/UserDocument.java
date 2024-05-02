@@ -22,7 +22,7 @@ public class UserDocument {
     private String email;
     private String password;
     private boolean isEnabled;
-    @DBRef
     @JsonManagedReference
+    @DBRef(lazy = true)
     private List<Role> roles;
 }

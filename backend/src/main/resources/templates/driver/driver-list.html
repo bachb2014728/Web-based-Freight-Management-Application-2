@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/app.html}">
+<head>
+    <title>Quản lý tài xế</title>
+</head>
+<body>
+<header class="pagetitle" layout:fragment="custom-header">
+    <h1 class="label">Quản lý tài xế</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/dashboard}">Trang chủ</a></li>
+            <li class="breadcrumb-item active">Tài xế</li>
+        </ol>
+    </nav>
+</header>
+<section layout:fragment="custom-content">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Danh sách tài xế</h5>
+            <table class="table table-bordered">
+                <thead>
+                <tr >
+                    <th scope="col">#</th>
+                    <th scope="col">Tên</th>
+                    <th scope="col">Thông tin cá nhân</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col">Xe</th>
+                    <th scope="col">Lô hàng</th>
+                    <th scope="col">Chức năng</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="driver,index : ${drivers}">
+                    <th scope="row" th:text="${index.index + 1}"></th>
+                    <td th:text="${driver.name}"></td>
+                    <td>
+                        Căn cước công dân : <span th:text="${driver.identifier}"></span><br>
+                        Giấy phép lái xe : <span th:text="${driver.license}"></span><br>
+                        Số điện thoại : <span th:text="${driver.phone}"></span><br>
+                        Địa chỉ : <span th:text="${driver.address}"></span>
+                    </td>
+                    <td>
+                        <span th:if="${driver.status == 'Available'}" class="badge bg-primary">Sẵn sàng</span>
+                        <span th:if="${driver.status == 'In Use'}" class="badge bg-warning text-dark">Đang lái xe</span>
+                        <span th:if="${driver.status == 'Off Duty'}" class="badge bg-secondary">Nghỉ</span>
+                    </td>
+                    <td th:text="${driver.car.licensePlate}"></td>
+                    <td >
+                        <span th:text="${driver.shipments.first.id}" th:if="${driver.shipments == null}"></span>
+                    </td>
+                    <td>
+                        <a th:href="@{'/drivers/'+${driver.id}+'/edit'}" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
+                        <a th:href="@{'/drivers/'+${driver.id}+'/delete'}" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+<div layout:fragment="custom-javascript">
+</div>
+</body>
+</html>

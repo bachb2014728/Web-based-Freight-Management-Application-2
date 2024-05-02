@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/app.html}">
+<head>
+    <title>Tạo lô hàng</title>
+</head>
+<body>
+<header class="pagetitle" layout:fragment="custom-header">
+    <h1 class="label">Quản lý kho</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/dashboard}">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/batches}">Danh sách</a></li>
+            <li class="breadcrumb-item active">Tạo lô hàng</li>
+        </ol>
+    </nav>
+</header>
+<section layout:fragment="custom-content">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Thông tin lô hàng</h5>
+            <form class="row g-3" th:action="@{/batches/save}" method="post" th:object="${batch}">
+                <div class="col-sm">
+                    <div class="mb-3">
+                        <label for="type" class="form-label">Loại lô hàng</label>
+                        <select class="form-select" id="type" name="type" th:field="*{type}">
+                            <option value="" selected="">Chọn trạng thái</option>
+                            <option value="Fragile Goods">Hàng dễ vỡ</option>
+                            <option value="Bulk Cargo">Hàng rời</option>
+                            <option value="Liquid Cargo">Hàng lỏng</option>
+                            <option value="Dangerous Goods">Hàng nguy hiểm</option>
+                            <option value="Stock Goods">Hàng tồn kho</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="destinationStore" class="form-label">Cửa hàng đến</label>
+                        <select class="form-select" id="destinationStore" name="destinationStore" th:field="*{destinationStore}">
+                            <option value="" selected="">Chọn xe vận tải</option>
+                            <th:block th:each="store : ${stores}">
+                                <option th:value="${store.id}" th:text="${store.name}"></option>
+                            </th:block>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Thêm vào chuyến vận chuyển không ?</label>
+                        <div class="col-sm-10">
+                            <div class="form-check">
+                                <input th:value="true" class="form-check-input" type="radio" id="gridRadio1" name="check" >
+                                <label class="form-check-label" for="gridRadio1">Có</label>
+                            </div>
+                            <div class="form-check">
+                                <input th:value="false" class="form-check-input" type="radio" id="gridRadio2" name="check" checked>
+                                <label class="form-check-label" for="gridRadio2">Không</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Tạo lô hàng</button>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="mb-3">
+                        <label class="form-label">Chọn hàng hóa</label>
+                        <div th:each="good : ${merchandises}">
+                            <input class="form-check-input" type="checkbox" th:value="${good.id}" th:id="${'good' + good.id}" name="merchandises"/>
+                            <label class="form-check-label" th:for="${'good' + good.id}"
+                                   th:text="${good.name} + ' - '+ ${good.receiver.address.province.name} "></label>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</section>
+<div layout:fragment="custom-javascript">
+<!--    <script th:inline="javascript">-->
+<!--        // Giả sử bạn đã lưu trữ danh sách các hàng hóa trong biến JavaScript `merchandises`-->
+<!--        /*<![CDATA[*/-->
+<!--        var merchandises = [[${merchandises}]] ;-->
+<!--        /*]]>*/-->
+
+<!--        $(document).ready(function(){-->
+<!--            $('#destinationStore').change(function(){-->
+<!--                var selectedValue = $(this).val(); // Lấy id của option được chọn-->
+<!--                var selectedText = $("#destinationStore option:selected").text(); // Lấy tên của option được chọn-->
+<!--                console.log(selectedValue)-->
+<!--                // Lọc ra những hàng hóa có địa chỉ bằng với địa chỉ của cửa hàng được chọn-->
+<!--                var filteredMerchandises = merchandises.filter(function(merchandise) {-->
+<!--                    return merchandise.receiver.address.province.name === selectedValue;-->
+<!--                });-->
+<!--               -->
+<!--                // Xóa tất cả các checkbox hàng hóa hiện tại-->
+<!--                var merchandiseDiv = $('div[th\\:each="good : ${merchandises}"]');-->
+<!--                merchandiseDiv.empty();-->
+
+<!--                // Thêm các checkbox mới cho mỗi hàng hóa trong danh sách đã lọc-->
+<!--                $.each(filteredMerchandises, function(i, merchandise){-->
+<!--                    merchandiseDiv.append('<input class="form-check-input" type="checkbox" value="'+merchandise.id+'" id="good'+merchandise.id+'" name="merchandises"/><label class="form-check-label" for="good'+merchandise.id+'">'+merchandise.name+'</label>');-->
+<!--                });-->
+<!--            });-->
+<!--        });-->
+<!--    </script>-->
+</div>
+</body>
+</html>

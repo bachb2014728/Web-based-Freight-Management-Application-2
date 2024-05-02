@@ -30,6 +30,6 @@ public class Employee {
     private String gender;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date date;
-    @DBRef
+    @DBRef(lazy = true)
     private UserDocument user;
 }

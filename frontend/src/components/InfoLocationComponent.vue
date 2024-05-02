@@ -114,15 +114,6 @@ export default {
     this.getProvinces();
     this.getDistricts();
     this.getWards()
-    // this.$nextTick(() => {
-    //   if (this.selectedCityId) {
-    //     this.getDistricts().then(() => {
-    //       if (this.selectedDistrictId) {
-    //         this.getWards();
-    //       }
-    //     });
-    //   }
-    // });
   }
 }
 </script>

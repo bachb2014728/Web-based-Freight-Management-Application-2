@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/app.html}">
+<head>
+    <title>Quản lý xe</title>
+</head>
+<body>
+<header class="pagetitle" layout:fragment="custom-header">
+    <h1 class="label">Quản lý xe</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/dashboard}">Trang chủ</a></li>
+            <li class="breadcrumb-item active">Xe</li>
+        </ol>
+    </nav>
+</header>
+<section layout:fragment="custom-content">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Danh sách xe vận chuyển</h5>
+            <table class="table table-bordered">
+                <thead>
+                    <tr >
+                        <th scope="col">#</th>
+                        <th scope="col">Biển số xe</th>
+                        <th scope="col">Trọng tải tối đa</th>
+                        <th scope="col">Trọng tải hiện tại</th>
+                        <th scope="col">Vị trí hiện tại</th>
+                        <th scope="col">Trạng thái</th>
+                        <th scope="col">Chức năng</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr th:each="car,index : ${cars}">
+                    <th scope="row" th:text="${index.index + 1}"></th>
+                    <td th:text="${car.licensePlate}"></td>
+                    <td th:text="${car.load}"></td>
+                    <td th:text="${car.capacity}"></td>
+                    <td th:text="${car.address}"></td>
+                    <td>
+                        <span th:if="${car.status == 'Available'}" class="badge bg-primary">Sẵn sàng</span>
+                        <span th:if="${car.status == 'In Use'}" class="badge bg-warning text-dark">Đang dùng</span>
+                        <span th:if="${car.status == 'Maintenance'}" class="badge bg-secondary">Bảo trì</span>
+                    </td>
+                    <td>
+                        <a th:href="@{'/cars/'+${car.id}+'/edit'}" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
+                        <a th:href="@{'/cars/'+${car.id}+'/delete'}" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+<div layout:fragment="custom-javascript">
+</div>
+</body>
+</html>

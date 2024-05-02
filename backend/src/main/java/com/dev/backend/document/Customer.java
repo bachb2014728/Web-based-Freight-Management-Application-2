@@ -27,9 +27,9 @@ public class Customer {
     private String phone;
     private String codeId;
     private Address address;
-    @DBRef
+    @DBRef(lazy = true)
     private List<Merchandise> merchandises;
-    @DBRef
+    @DBRef(lazy = true)
     private UserDocument user;
 
 }

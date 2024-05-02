@@ -35,9 +35,9 @@
           <input type="date" class="form-control" id="date"  v-model="updateItem.date">
         </div>
       </div>
-      <div class="row mb-3" v-if="updateItem.address">
-        <label for="address" class="form-label">Địa chỉ:
-          <em>{{updateItem.address.ward.name}}, {{updateItem.address.district.name}}, {{updateItem.address.province.name}}</em>
+      <div class="row mb-3" >
+        <label for="address" class="form-label" >Địa chỉ:
+          <em v-if="updateItem.address">{{updateItem.address.ward.name}}, {{updateItem.address.district.name}}, {{updateItem.address.province.name}}</em>
         </label>
         <div id="address">
           <select id="province" name="province" class="form-select mb-3" v-model="selectedCity" @change="updateCityId">
@@ -102,19 +102,19 @@ export default {
     updateCityId(event) {
       const selectedOption = event.target.options[event.target.selectedIndex];
       this.selectedCity.code = selectedOption.getAttribute('data-id');
-      this.updateItem.address.province = {name: this.selectedCity.name, code: this.selectedCity.id}
+      // this.updateItem.address.province = {name: this.selectedCity.name, code: this.selectedCity.id}
       this.getDistricts();
     },
     updateDistrictId(event) {
       const selectedOption = event.target.options[event.target.selectedIndex];
       this.selectedDistrict.code = selectedOption.getAttribute('data-id');
-      this.updateItem.address.district = {name: this.selectedDistrict.name, code: this.selectedDistrict.id}
+      // this.updateItem.address.district = {name: this.selectedDistrict.name, code: this.selectedDistrict.id}
       this.getWards();
     },
     updateWardId(event){
       const selectedOption = event.target.options[event.target.selectedIndex];
       this.selectedWard.code = selectedOption.getAttribute('data-id');
-      this.updateItem.address.ward = {name: this.selectedWard.name, code: this.selectedWard.id}
+      // this.updateItem.address.ward = {name: this.selectedWard.name, code: this.selectedWard.id}
     },
     getProvinces() {
       apiClient.get('provinces/?basic=true&limit=100').then(response => {
@@ -144,12 +144,12 @@ export default {
         gender: this.updateItem.gender || this.originalItem.gender,
         codeId: this.updateItem.codeId || this.originalItem.codeId,
         date: this.updateItem.date || this.originalItem.date,
-        provinceCode: this.updateItem.address.province.code || this.originalItem.address.province.code,
-        districtCode: this.updateItem.address.district.code || this.originalItem.address.district.code,
-        wardCode: this.updateItem.address.ward.code || this.originalItem.address.ward.code,
-        province: this.updateItem.address.province.name || this.originalItem.address.province.name,
-        district: this.updateItem.address.district.name || this.originalItem.address.district.name,
-        ward: this.updateItem.address.ward.name || this.originalItem.address.ward.name
+        provinceCode: this.selectedCity.id || this.originalItem.address.province.code,
+        districtCode: this.selectedDistrict.id || this.originalItem.address.district.code,
+        wardCode: this.selectedWard.id || this.originalItem.address.ward.code,
+        province: this.selectedCity.name || this.originalItem.address.province.name,
+        district: this.selectedDistrict.name || this.originalItem.address.district.name,
+        ward: this.selectedWard.name || this.originalItem.address.ward.name
       }
       console.log(data)
       const response = await CustomerService.update(data);

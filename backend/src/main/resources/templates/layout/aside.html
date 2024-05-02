@@ -19,11 +19,11 @@
               <i class="bi-circle"></i><span>Danh sách</span>
             </a>
           </li>
-          <li>
-            <a th:href="@{/merchandises/create}">
-              <i class="bi bi-circle"></i><span>Thêm hàng hóa</span>
-            </a>
-          </li>
+<!--          <li>-->
+<!--            <a th:href="@{/merchandises/create}">-->
+<!--              <i class="bi bi-circle"></i><span>Thêm hàng hóa</span>-->
+<!--            </a>-->
+<!--          </li>-->
         </ul>
       </li>
 
@@ -82,22 +82,27 @@
       </li>
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-database-gear"></i><span>Quản lý kho</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-database-gear"></i><span>Quản lý vận chuyển</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
-            <a href="">
-              <i class="bi bi-circle"></i><span>Bootstrap Icons</span>
+            <a th:href="@{/batches}">
+              <i class="bi bi-circle"></i><span>Lô hàng</span>
             </a>
           </li>
           <li>
-            <a href="">
-              <i class="bi bi-circle"></i><span>Remix Icons</span>
+            <a th:href="@{/batches/create}">
+              <i class="bi bi-circle"></i><span>Tạo lô hàng</span>
             </a>
           </li>
           <li>
-            <a href="icons-boxicons.html">
-              <i class="bi bi-circle"></i><span>Boxicons</span>
+            <a th:href="@{/shipments}">
+              <i class="bi bi-circle"></i><span>Chuyến đi</span>
+            </a>
+          </li>
+          <li>
+            <a th:href="@{/shipments/create}">
+              <i class="bi bi-circle"></i><span>Tạo chuyến đi</span>
             </a>
           </li>
         </ul>
@@ -106,20 +111,25 @@
         <a class="nav-link collapsed" data-bs-target="#icons-2-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-car-front"></i><span>Quản lý xe</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
-        <ul id="icons-2-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <ul id="icons-2-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav-2">
           <li>
-            <a href="icons-bootstrap.html">
-              <i class="bi bi-circle"></i><span>Bootstrap Icons</span>
+            <a th:href="@{/cars}">
+              <i class="bi bi-circle"></i><span>Danh sách xe</span>
             </a>
           </li>
           <li>
-            <a href="icons-remix.html">
-              <i class="bi bi-circle"></i><span>Remix Icons</span>
+            <a th:href="@{/cars/create}">
+              <i class="bi bi-circle"></i><span>Thêm xe</span>
             </a>
           </li>
           <li>
-            <a href="icons-boxicons.html">
-              <i class="bi bi-circle"></i><span>Boxicons</span>
+            <a th:href="@{/drivers}">
+              <i class="bi bi-circle"></i><span>Tài xế</span>
+            </a>
+          </li>
+          <li>
+            <a th:href="@{/drivers/create}">
+              <i class="bi bi-circle"></i><span>Thêm tài xế</span>
             </a>
           </li>
         </ul>

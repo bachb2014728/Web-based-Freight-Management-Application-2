@@ -35,7 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
-//        System.out.print(authHeader);
+
         if (StringUtils.startsWith(authHeader,"Basic ")){
             // Extract base64 encoded auth info
             String base64Credentials = authHeader.substring(6);
@@ -89,7 +89,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 out.print(json);
                 out.flush();
                 return;
-            }catch (SignatureException e) {
+            }
+            catch (SignatureException e) {
                 var problemDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), e.getMessage());
                 problemDetail.setProperty("exception_type", "SignatureException");
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

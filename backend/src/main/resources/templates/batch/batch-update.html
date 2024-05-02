@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/app.html}">
+<head>
+    <title>Cập nhật lô hàng</title>
+</head>
+<body>
+<header class="pagetitle" layout:fragment="custom-header">
+    <h1 class="label">Quản lý kho</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/dashboard}">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/batches}">Danh sách</a></li>
+            <li class="breadcrumb-item active">Cập nhật lô hàng</li>
+        </ol>
+    </nav>
+</header>
+<section layout:fragment="custom-content">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Thông tin lô hàng</h5>
+            <form class="row g-3" th:action="@{/batches/__${id}__/update}" method="post" th:object="${batch}">
+                <div class="col-sm">
+                    <div class="mb-3">
+                        <label for="type" class="form-label">Loại lô hàng</label>
+                        <select class="form-select" id="type" name="type" th:field="*{type}">
+                            <option value="" selected="">Chọn trạng thái</option>
+                            <option value="Fragile Goods">Hàng dễ vỡ</option>
+                            <option value="Bulk Cargo">Hàng rời</option>
+                            <option value="Liquid Cargo">Hàng lỏng</option>
+                            <option value="Dangerous Goods">Hàng nguy hiểm</option>
+                            <option value="Stock Goods">Hàng tồn kho</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="destinationStore" class="form-label">Cửa hàng đến</label>
+                        <select class="form-select" id="destinationStore" name="destinationStore" th:field="*{destinationStore}">
+                            <option value="" selected="">Chọn xe vận tải</option>
+                            <th:block th:each="store : ${stores}">
+                                <option th:value="${store.id}" th:text="${store.name}"></option>
+                            </th:block>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Thêm vào chuyến vận chuyển không ?</label>
+                        <div class="col-sm-10">
+                            <div class="form-check">
+                                <input th:value="true" class="form-check-input" type="radio" id="gridRadio1" name="status" th:checked="${batch.status == true}">
+                                <label class="form-check-label" for="gridRadio1">Có</label>
+                            </div>
+                            <div class="form-check">
+                                <input th:value="false" class="form-check-input" type="radio" id="gridRadio2" name="status" th:checked="${batch.status == false}">
+                                <label class="form-check-label" for="gridRadio2">Không</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="mb-3">
+                        <label class="form-label">Chọn hàng hóa</label>
+                        <div th:each="good : ${merchandises}">
+                            <input class="form-check-input" type="checkbox" th:value="${good.id}" th:id="${'good' + good.id}" name="merchandises"
+                                   th:checked="${#lists.contains(batch.merchandises, good.id)}"/>
+                            <label class="form-check-label" th:for="${'good' + good.id}" th:text="${good.name}"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Tạo lô hàng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+<div layout:fragment="custom-javascript">
+</div>
+</body>
+</html>

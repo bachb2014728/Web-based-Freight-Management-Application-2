@@ -19,7 +19,7 @@
         <div>
           <h6 class="my-0">Địa chỉ :</h6>
         </div>
-        <span class="text-body-secondary">
+        <span class="text-body-secondary" v-if="item.address">
           {{item.address.ward.name}}, {{item.address.district.name}}, {{item.address.province.name}}
         </span>
       </li>

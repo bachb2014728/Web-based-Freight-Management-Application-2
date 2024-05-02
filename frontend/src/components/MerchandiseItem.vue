@@ -4,8 +4,9 @@
       <p class="mb-1">Mã hàng hóa : <span>{{item.id}}</span> <a @click="copyToClipboard(item.id)"><i class="bi bi-copy"></i></a></p>
       <small>
         {{formattedDate}}
-        <span class="badge bg-warning" v-if="item.status === 'AWAITING' ">{{item.status}}</span>
-        <span class="badge bg-info" v-if="item.status === 'PROGRESS' ">{{item.status}}</span>
+        <span class="badge bg-primary" v-if="item.status === 'ARCHIVE' ">{{item.status}}</span>
+        <span class="badge bg-secondary" v-if="item.status === 'PROCESSING' ">{{item.status}}</span>
+        <span class="badge bg-success" v-if="item.status === 'PENDING' ">{{item.status}}</span>
       </small>
     </div>
     <span class="d-flex w-100 justify-content-between">

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/app.html}">
+<head>
+    <title>Nhập thông tin chuyến đi</title>
+</head>
+<body>
+<header class="pagetitle" layout:fragment="custom-header">
+    <h1 class="label">Quản lý chuyến đi</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/dashboard}">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/shipments}">Danh sách</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/shipments/create}">Thêm chuyến đi</a></li>
+            <li class="breadcrumb-item active">Nhập thông tin chuyến đi</li>
+        </ol>
+    </nav>
+</header>
+<section layout:fragment="custom-content">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Thông tin chuyến đi</h5>
+            <form class="row g-3" th:action="@{/shipments/__${shipment.id}__/save}" method="post" th:object="${shipment}">
+                <div class="row mb-3">
+                    <div class="col-sm">
+<!--                        <label for="estimatedTime" class="form-label">Thời gian dự kiến</label>-->
+<!--                        <input type="date" class="form-control" id="estimatedTime" name="estimatedTime" th:field="*{estimatedTime}">-->
+                    </div>
+                    <div class="col-sm">
+                        <label for="note" class="form-label">Ghi chú</label>
+                        <input type="text" class="form-control"
+                               id="note" name="note" th:field="*{note}"
+                               th:value="${shipment.note}">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm">
+                        <label for="type" class="form-label">Trạng thái</label>
+                        <select class="form-select" id="type" name="type" th:field="*{status}">
+                            <option value="" selected="">Chọn trạng thái</option>
+<!--                            <option value="PREPARING">Sẵn sàng</option>-->
+                            <option value="AWAITING_EXPORT">Chờ xuất kho</option>
+                        </select>
+                    </div>
+                    <div class="col-sm">
+                        <label for="driver" class="form-label">Tài xế</label>
+                        <select class="form-select" id="driver" name="driver" >
+                            <option value="" selected="">Chọn tài xế</option>
+                            <th:block th:each="item : ${drivers}">
+                                <option th:value="${item.id}" th:text="${item.name}"></option>
+                            </th:block>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm">
+                        <label for="receivingStore" class="form-label">Cửa hàng đến</label>
+                        <select class="form-select" id="receivingStore" name="type" th:field="*{receivingStore}">
+                            <option value="" selected="">Chọn trạng thái</option>
+                            <th:block th:each="item : ${stores}">
+                                <option th:value="${item.id}" th:text="${item.name}"></option>
+                            </th:block>
+                        </select>
+                    </div>
+                    <div class="col-sm">
+                        <label for="router" class="form-label">Tuyến đường dự kiến</label>
+                        <select class="form-select" id="router" name="router" th:field="*{router}">
+                            <option value="" selected="">Chọn tuyến đường</option>
+                            <th:block th:each="item : ${routers}">
+                                <option th:value="${item.id}" th:text="${item.name}"></option>
+                            </th:block>
+                        </select>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Thực hiện</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+<div layout:fragment="custom-javascript">
+</div>
+</body>
+</html>

@@ -1,5 +1,6 @@
 package com.dev.backend.rest.dto;
 
+import com.dev.backend.document.Store;
 import lombok.Builder;
 import lombok.Data;
 
@@ -19,6 +20,7 @@ public class MerchandiseResponse {
     private String phoneReceiver;
     private String addressSender;
     private String addressReceiver;
+    private Store store;
     private String status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedOn;

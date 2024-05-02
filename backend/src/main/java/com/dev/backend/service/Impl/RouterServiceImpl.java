@@ -75,6 +75,12 @@ public class RouterServiceImpl implements RouterService {
         routerRepository.save(router);
     }
 
+    @Override
+    public List<RouterDto> findAllRoutersHaveActive() {
+        List<Router> routers = routerRepository.findAllByStatus(true);
+        return routers.stream().map(this::mapRouterToRouterDto).collect(Collectors.toList());
+    }
+
     private Location convertLocation(String ward, String district, String province) {
         Location location = Location.builder()
                 .ward(ward)

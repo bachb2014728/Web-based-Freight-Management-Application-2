@@ -7,10 +7,7 @@ import com.dev.backend.rest.dto.MerchandiseUpdateRequest;
 import com.dev.backend.rest.dto.MessageObject;
 import com.dev.backend.rest.dto.address.InformationRequest;
 import com.dev.backend.service.MerchandiseService;
-import com.dev.backend.service.helper.ConvertAddress;
-import com.dev.backend.service.helper.ConvertImage;
-import com.dev.backend.service.helper.ConvertMerchandise;
-import com.dev.backend.service.helper.ConvertUser;
+import com.dev.backend.service.helper.*;
 import com.dev.backend.web.dto.*;
 import com.dev.backend.web.dto.location.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -37,10 +35,16 @@ public class MerchandiseServiceImpl implements MerchandiseService {
     private final ConvertUser convertUser;
     private final ConvertImage convertImage;
     private final ConvertMerchandise convertMerchandise;
+    private final StoreRepository storeRepository;
+    private final EmployeeRepository employeeRepository;
+    private final UserRepository userRepository;
+    private final ConvertStore convertStore;
+    private final BatchRepository batchRepository;
 
     @Override
-    public List<MerchandiseDto> getAllMerchandise() {
-        List<Merchandise> merchandises = merchandiseRepository.findAll();
+    public List<MerchandiseDto> getAllMerchandise(Principal principal) {
+        Employee employee = employeeRepository.findByUser(userRepository.findByEmail(principal.getName()).get());
+        List<Merchandise> merchandises = merchandiseRepository.findAllByStoreAndStatus(storeRepository.findByEmployee(employee),"PROCESSING");
         return merchandises.stream().map(convertMerchandise::mapMerchandiseToMerchandiseDto).collect(Collectors.toList());
     }
 
@@ -210,6 +214,11 @@ public class MerchandiseServiceImpl implements MerchandiseService {
         merchandiseOld.setName(merchandise.getName());
         merchandiseOld.setPrice(merchandise.getPrice());
         merchandiseOld.setWeight(merchandise.getWeight());
+        merchandiseOld.setStatus(merchandise.getStatus());
+
+        Store store = storeRepository.findById(merchandise.getStore()).get();
+        merchandiseOld.setStore(store);
+
         merchandiseOld.setUpdatedOn(ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).toLocalDateTime());
         if((long) merchandise.getImages().size() > 0){
             List<Image> images = new ArrayList<>();
@@ -254,12 +263,14 @@ public class MerchandiseServiceImpl implements MerchandiseService {
 
     @Override
     public MerchandiseDto saveNewMerchandiseByUser(CreateMerchandise merchandise, HttpServletRequest request) {
+        Store store = storeRepository.findById(merchandise.getStore()).get();
         UserDocument user = convertUser.getUserFromToken(request);
         Merchandise merchandiseNew = Merchandise.builder()
                 .name(merchandise.getName())
                 .price(merchandise.getPrice())
                 .weight(merchandise.getWeight())
-                .status("AWAITING")
+                .status(merchandise.getStatus())
+                .store(store)
                 .sender(
                         Information.builder()
                                 .name(merchandise.getNameSender())
@@ -319,5 +330,37 @@ public class MerchandiseServiceImpl implements MerchandiseService {
             merchandiseOld.setReceiver(receiver);
         }
         return merchandiseRepository.save(merchandiseOld);
+    }
+
+    @Override
+    public MerchandiseUserDto getOneMerchandiseByUser(String id) {
+        Merchandise merchandise = merchandiseRepository.findById(id).get();
+        return convertMerchandise.mapMerchandiseToMerchandiseDtoForUser(merchandise);
+    }
+
+    @Override
+    public List<MerchandiseDto> getAllMerchandiseHaveProcessing(Principal principal) {
+        Store store = convertStore.getStoreByEmail(principal.getName());
+        List<Merchandise> merchandises = merchandiseRepository.findAllByStoreAndStatus(store,"PROCESSING");
+        return merchandises.stream().map(convertMerchandise::mapMerchandiseToMerchandiseDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<MerchandiseDto> getAllMerchandiseHaveProcessingAndPending(Principal principal) {
+        Store store = convertStore.getStoreByEmail(principal.getName());
+        List<String> statuses = Arrays.asList("PROCESSING", "PENDING");
+        List<Merchandise> merchandiseList = merchandiseRepository.findAllByStoreAndStatusIn(store,statuses);
+
+        List<Batch> batches = batchRepository.findAllByCreator(convertStore.getEmployeeByEmail(principal.getName()));
+
+        List<Merchandise> merchandisesInBatches = batches.stream()
+                .flatMap(batch -> batch.getMerchandises().stream())
+                .toList();
+
+        List<Merchandise> merchandisesWithoutBatch = merchandiseList.stream()
+                .filter(merchandise -> !merchandisesInBatches.contains(merchandise))
+                .toList();
+
+        return merchandisesWithoutBatch.stream().map(convertMerchandise::mapMerchandiseToMerchandiseDto).collect(Collectors.toList());
     }
 }

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/app.html}">
+<head>
+    <title>Cập nhật thông tin chuyến đi</title>
+</head>
+<body>
+<header class="pagetitle" layout:fragment="custom-header">
+    <h1 class="label">Quản lý chuyến đi</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/dashboard}">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/shipments}">Danh sách</a></li>
+            <li class="breadcrumb-item active">Cập nhật thông tin chuyến đi</li>
+        </ol>
+    </nav>
+</header>
+<section layout:fragment="custom-content">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Thông tin chuyến đi</h5>
+            <form class="row g-3" th:action="@{/shipments/__${shipment.id}__/update}" method="post" th:object="${shipment}">
+                <div class="row">
+                    <div class="col-sm">
+                        <div class="mb-3">
+                            <label for="note" class="form-label">Ghi chú</label>
+                            <input type="text" class="form-control"
+                                   id="note" name="note" th:field="*{note}"
+                                   th:value="${shipment.note}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="driver" class="form-label">Tài xế</label>
+                            <select class="form-select" id="driver" name="driver" th:field="*{driver}">
+                                <option value="" selected="">Chọn xe vận tải</option>
+                                <th:block th:each="item : ${drivers}">
+                                    <option th:value="${item.id}" th:text="${item.name}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="receivingStore" class="form-label">Cửa hàng đến</label>
+                            <select class="form-select" id="receivingStore" name="type" th:field="*{receivingStore}">
+                                <option value="" selected="">Chọn trạng thái</option>
+                                <th:block th:each="item : ${stores}">
+                                    <option th:value="${item.id}" th:text="${item.name}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="router" class="form-label">Tuyến đường dự kiến</label>
+                            <select class="form-select" id="router" name="router" th:field="*{router}">
+                                <option value="" selected="">Chọn tuyến đường</option>
+                                <th:block th:each="item : ${routers}">
+                                    <option th:value="${item.id}" th:text="${item.name}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-sm btn-primary">Thực hiện</button>
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Trạng thái : </label><br>
+                            <span id="status" class="badge bg-info" th:text="${shipment.status}"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Chọn lô hàng</label>
+                            <div th:each="good : ${batches}">
+                                <input class="form-check-input" type="checkbox" th:value="${good.id}" th:id="${'good' + good.id}" name="batches"
+                                       th:checked="${#lists.contains(@convertObjectToList.shipment(shipment.batches), good.id)}"/>
+                                <label class="form-check-label" th:for="${'good' + good.id}"
+                                       th:text="${good.id} + ' - '+ ${good.destinationStore.province} "></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+<div layout:fragment="custom-javascript">
+</div>
+</body>
+</html>

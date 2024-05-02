@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/app.html}">
+<head>
+    <title>Cập nhật tài xế</title>
+</head>
+<body>
+<header class="pagetitle" layout:fragment="custom-header">
+    <h1 class="label">Quản lý tài xế</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/dashboard}">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/drivers}">Danh sách</a></li>
+            <li class="breadcrumb-item active">Cập nhật tài xế</li>
+        </ol>
+    </nav>
+</header>
+<section layout:fragment="custom-content">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Thông tin tài xế</h5>
+            <form class="row g-3" th:action="@{/drivers/__${driver.id}__/update}" method="post" th:object="${driver}">
+                <input type="hidden" name="isEnabled" th:value="true">
+                <div class="row mb-3">
+                    <div class="col-sm">
+                        <label for="name" class="form-label">Tên tài xế</label>
+                        <input type="text" class="form-control"
+                               id="name" name="name" th:field="*{name}"
+                               th:value="${driver.name}">
+                    </div>
+                    <div class="col-sm">
+                        <label for="status" class="form-label">Trạng thái</label>
+                        <select class="form-select" id="status" name="status" th:field="*{status}">
+                            <option value="" selected="">Chọn trạng thái</option>
+                            <option value="Available">Sẵn sàng</option>
+                            <option value="In Use">Đang lái xe</option>
+                            <option value="Off Duty">Nghỉ</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm">
+                        <label for="phone" class="form-label">Số điện thoại</label>
+                        <input type="number" class="form-control" id="phone"
+                               name="phone" th:field="*{phone}" th:value="${driver.phone}">
+                    </div>
+                    <div class="col-sm">
+                        <label for="identifier" class="form-label">Căn cước công dân</label>
+                        <input type="text" class="form-control"
+                               id="identifier" name="identifier" th:field="*{identifier}" th:value="${driver.identifier}">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm">
+                        <label for="license" class="form-label">Giấy phép lái xe</label>
+                        <input type="text" class="form-control"
+                               id="license" name="license" th:field="*{license}" th:value="${driver.license}">
+                    </div>
+                    <div class="col-sm">
+                        <label for="car" class="form-label">Xe</label>
+                        <select class="form-select" id="car" name="car" th:field="*{car}">
+                            <option value="" selected="">Chọn xe vận tải</option>
+                            <th:block th:each="car : ${cars}">
+                                <option th:value="${car.id}" th:text="${car.licensePlate}"></option>
+                            </th:block>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm">
+                        <label for="address" class="form-label">Vị trí hiện tại</label>
+                        <input type="text" class="form-control"
+                               id="address" name="address" th:field="*{address}" th:value="${driver.address}">
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Cập nhật tài xế</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+<div layout:fragment="custom-javascript">
+</div>
+</body>
+</html>

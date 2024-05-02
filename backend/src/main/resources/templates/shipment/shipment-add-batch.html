@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/app.html}">
+<head>
+    <title>Thêm lô hàng vào chuyến</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+</head>
+<body>
+<header class="pagetitle" layout:fragment="custom-header">
+    <h1>Quản lý chuyến đi</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/dashboard}">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/shipments}">Danh sách</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/shipments/create}">Tạo chuyến đi</a></li>
+            <li class="breadcrumb-item active">Thêm lô hàng : <span th:text="${shipment.sendingStore.name}"></span></li>
+        </ol>
+    </nav>
+</header>
+<section layout:fragment="custom-content">
+    <div class="card">
+        <div  class="card-body" >
+            <h5 class="card-title"><span>Danh sách lô hàng</span></h5>
+            <form th:action="@{/shipments/__${shipment.id}__/batch/save}" th:object="${shipment}" method="post">
+                <label class="form-label">Chọn lô hàng</label>
+                <div th:each="item : ${batches}">
+                    <input class="form-check-input" type="checkbox" th:value="${item.id}" th:id="${'good' + item.id}" name="batches"
+                           th:checked="${@myUtil.checkBatch(shipment.batches, item)}"/>
+                    <label class="form-check-label" th:for="${'good' + item.id}"
+                           th:text="${'Kiểu : '+ item.type +' - Giá trị : '+@formatUtil.formatCurrency(item.totalPrice)+' - Trọng lượng : '+@formatUtil.formatWeight(item.totalWeight)}">
+                    </label>
+                </div><br>
+                <div class="text-center">
+                    <button class="btn btn-sm btn-primary">Cập nhật</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+<div layout:fragment="custom-javascript">
+</div>
+</body>
+</html>

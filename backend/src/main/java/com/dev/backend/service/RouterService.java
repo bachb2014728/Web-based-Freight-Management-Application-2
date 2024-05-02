@@ -11,4 +11,7 @@ public interface RouterService {
     RouterDto updateRouter(RouterRequest routerRequest, String routerId);
     List<RouterDto> findAllRouters();
     void saveRouter(RouterRequest routerRequest);
+
+    List<RouterDto> findAllRoutersHaveActive();
+
 }

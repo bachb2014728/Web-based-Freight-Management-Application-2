@@ -21,7 +21,7 @@ public class Role {
     private String id;
     private String name;
     private List<String> privileges;
-    @DBRef
     @JsonBackReference
+    @DBRef(lazy = true)
     private List<UserDocument> users;
 }

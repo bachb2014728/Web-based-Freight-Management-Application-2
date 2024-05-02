@@ -20,8 +20,4 @@ public class Ward {
     private String id;
     private String code;
     private String name;
-    @DBRef
-    private List<UserDocument> users;
-    @DBRef
-    private List<Router> routers;
 }

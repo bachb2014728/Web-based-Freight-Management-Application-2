@@ -42,9 +42,9 @@ public class SecurityConfig{
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/api/v1/auth/**","/css/**","/js/**","/login").permitAll();
-                    auth.requestMatchers("/api/**").hasAnyAuthority("USER");
-                    auth.requestMatchers("/dashboard/**","/employee/**","/**").hasAnyAuthority("ADMIN","STAFF");
+                    auth.requestMatchers("/api/v1/auth/**","/api/v1/stores/**","/css/**","/js/**","/login").permitAll();
+                    auth.requestMatchers("/api/**").hasAnyAuthority("USER", "STAFF");
+                    auth.requestMatchers("/dashboard/**","/employee/**","/**").hasAnyAuthority("ADMIN");
                     auth.anyRequest().authenticated();
                 })
                 .sessionManagement(manage -> manage

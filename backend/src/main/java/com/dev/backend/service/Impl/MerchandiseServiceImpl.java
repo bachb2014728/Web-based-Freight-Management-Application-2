@@ -43,7 +43,7 @@ public class MerchandiseServiceImpl implements MerchandiseService {
 
     @Override
     public List<MerchandiseDto> getAllMerchandise(Principal principal) {
-        Employee employee = employeeRepository.findByUser(userRepository.findByEmail(principal.getName()).get());
+        Employee employee = convertStore.getEmployeeByEmail(principal.getName());
         List<Merchandise> merchandises = merchandiseRepository.findAllByStoreAndStatus(storeRepository.findByEmployee(employee),"PROCESSING");
         return merchandises.stream().map(convertMerchandise::mapMerchandiseToMerchandiseDto).collect(Collectors.toList());
     }

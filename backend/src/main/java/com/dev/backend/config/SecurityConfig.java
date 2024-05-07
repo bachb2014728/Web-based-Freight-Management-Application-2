@@ -44,7 +44,7 @@ public class SecurityConfig{
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/api/v1/auth/**","/api/v1/stores/**","/css/**","/js/**","/login").permitAll();
                     auth.requestMatchers("/api/**").hasAnyAuthority("USER", "STAFF");
-                    auth.requestMatchers("/dashboard/**","/employee/**","/**").hasAnyAuthority("ADMIN");
+                    auth.requestMatchers("/dashboard/**","/employee/**","/**").hasAnyAuthority("ADMIN","STAFF");
                     auth.anyRequest().authenticated();
                 })
                 .sessionManagement(manage -> manage

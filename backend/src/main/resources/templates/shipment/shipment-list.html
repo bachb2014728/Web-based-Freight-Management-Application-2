@@ -17,13 +17,15 @@
 <section layout:fragment="custom-content">
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">Danh sách chuyến đi</h5>
+            <h2 class="card-title">
+                <span>Danh sách chuyến đi</span>
+            </h2>
             <table class="table table-bordered">
                 <thead>
                 <tr>
                     <th scope="col">Mã chuyến đi</th>
                     <th scope="col">Thông tin chuyến đi</th>
-                    <th scope="col">Tổng trọng lượng</th>
+                    <th scope="col">Trọng lượng</th>
                     <th scope="col">Cửa hàng nhận</th>
                     <th scope="col">Trạng thái</th>
                     <th scope="col">Chức năng</th>
@@ -39,12 +41,72 @@
                         <span class="badge bg-info" th:text="${item.status}"></span>
                     </td>
                     <td>
-                        <a th:href="@{'/shipments/'+${item.id}+'/edit'}" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
-                        <a th:href="@{'/shipment/'+${item.id}+'/delete'}" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
+                        <div th:if="${item.status != 'IN_PROGRESS'}">
+                            <a th:href="@{'/shipments/'+${item.id}+'/edit'}" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
+                            <a th:href="@{'/shipments/'+${item.id}+'/delete'}" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
+                            <a th:href="@{'/shipments/'+${item.id}+'/accept'}" class="btn btn-sm btn-success">Duyệt</a>
+                        </div>
                     </td>
                 </tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">
+                        <span>Danh sách hàng hóa đang vận chuyển</span>
+                    </h2>
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th scope="col">Mã chuyến đi</th>
+                            <th scope="col">Cửa hàng nhận</th>
+                            <th scope="col">Trạng thái</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item,index : ${shipmentsInProgress}">
+                            <td th:text="${item.id}"></td>
+
+                            <td th:text="${item.receivingStore.name}"></td>
+                            <td >
+                                <span class="badge bg-secondary" th:text="${item.status}"></span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm ">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">
+                        <span>Danh sách hàng hóa vận chuyên thành công</span>
+                    </h2>
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th scope="col">Mã chuyến đi</th>
+                            <th scope="col">Cửa hàng nhận</th>
+                            <th scope="col">Trạng thái</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item,index : ${shipmentsSuccess}">
+                            <td th:text="${item.id}"></td>
+                            <td th:text="${item.receivingStore.name}"></td>
+                            <td >
+                                <span class="badge bg-success" th:text="${item.status}"></span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </section>

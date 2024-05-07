@@ -27,9 +27,21 @@ public class ConvertStore {
     public Employee getEmployeeByEmail(String email){
         if(userRepository.existsByEmail(email)){
             UserDocument userDocument = userRepository.findByEmail(email).get();
-            return employeeRepository.findByUser(userDocument);
-        }else {
-            return null;
+            Employee employee = employeeRepository.findByUser(userDocument);
+            if(employee.getEmployees() == null){
+                for (Employee item : employeeRepository.findAll()){
+                    if(item.getEmployees() != null){
+                        for(Employee employeeItem : item.getEmployees()){
+                            if(employee.equals(employeeItem)){
+                                return  item;
+                            }
+                        }
+                    }
+                }
+            }else{
+                return employee;
+            }
         }
+        return null;
     }
 }

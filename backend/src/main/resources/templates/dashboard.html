@@ -12,13 +12,15 @@
 <section layout:fragment="custom-content">
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">Danh sách</h5>
+            <h5 class="card-title">
+                <span>Danh sách chuyến</span>
+            </h5>
             <table class="table table-bordered">
                 <thead>
                 <tr>
                     <th scope="col">Mã chuyến đi</th>
                     <th scope="col">Thông tin chuyến đi</th>
-                    <th scope="col">Tổng trọng lượng</th>
+                    <th scope="col">Trọng lượng</th>
                     <th scope="col">Cửa hàng gửi</th>
                     <th scope="col">Trạng thái</th>
                     <th scope="col">Duyệt</th>
@@ -31,10 +33,47 @@
                     <td th:text="${@formatUtil.formatWeight(item.totalWeight)}"></td>
                     <td th:text="${item.sendingStore.name}"></td>
                     <td >
-                        <span class="badge bg-info" th:text="${item.status}"></span>
+                        <span class="badge bg-secondary" th:text="${item.status}"></span>
                     </td>
                     <td >
-                        <a th:if="${item.status == 'IN_TRANSIT'} " th:href="@{'/shipments/'+${item.id}+'/accept'}" class="btn btn-sm btn-warning">Chấp nhập</i></a>
+                        <a th:if="${item.status == 'IN_PROGRESS'} " th:href="@{'/shipments/'+${item.id}+'/receivingAccept'}" class="btn btn-sm btn-warning">Chấp nhập</i></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">
+                <span>Danh sách vận chuyển thành công</span>
+            </h5>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">Mã chuyến đi</th>
+                    <th scope="col">Trọng lượng</th>
+                    <th scope="col">Cửa hàng gửi</th>
+                    <th>Danh sách lô hàng</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col">Duyệt</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item,index : ${shipmentsSuccess}">
+                    <td th:text="${item.id}"></td>
+                    <td th:text="${@formatUtil.formatWeight(item.totalWeight)}"></td>
+                    <td th:text="${item.sendingStore.name}"></td>
+                    <td>
+                        <div th:each="batch : ${item.batches}">
+                            <span th:text="${batch.id}"></span><br>
+                        </div>
+                    </td>
+                    <td >
+                        <span class="badge bg-success" th:text="${item.status}"></span>
+                    </td>
+                    <td >
+                        <a th:if="${item.status == 'IN_PROGRESS'} " th:href="@{'/shipments/'+${item.id}+'/receivingAccept'}" class="btn btn-sm btn-warning">Chấp nhập</i></a>
                     </td>
                 </tr>
                 </tbody>

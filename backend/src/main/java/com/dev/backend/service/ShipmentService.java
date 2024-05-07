@@ -32,4 +32,18 @@ public interface ShipmentService {
     void saveAddBatch(AddBatch shipment, String shipmentId, Principal principal);
 
     DriverDto driverOfShipment(String shipment);
+
+    void delete(String shipmentId, Principal principal);
+
+    void accept(String shipmentId);
+
+    List<ShipmentDto> findAllHaveInProgress(Principal principal);
+
+    List<ShipmentDto> findAllHaveInProgressByReceiver(Principal principal);
+
+    void receivingAccept(String shipmentId);
+
+    List<ShipmentDto> findAllHaveInSuccess(Principal principal);
+
+    List<ShipmentDto> findAllHaveInSuccessByReceiver(Principal principal);
 }

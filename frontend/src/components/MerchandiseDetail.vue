@@ -12,9 +12,11 @@
           </div>
         </div>
         <p class="text-center">
-          <span class="badge bg-primary" v-if="item.status === 'PROCESSING' ">{{item.status}}</span>
-          <span class="badge bg-secondary" v-if="item.status === 'ARCHIVE' ">{{item.status}}</span>
-          <span class="badge bg-success" v-if="item.status === 'PENDING' ">{{item.status}}</span>
+          <span class="badge bg-primary" v-if="item.status === 'ARCHIVE' ">Lưu trữ</span>
+          <span class="badge bg-secondary" v-if="item.status === 'PROCESSING' ">Đang yêu cầu</span>
+          <span class="badge bg-info" v-if="item.status === 'PENDING' ">Đang xử lý</span>
+          <span class="badge bg-warning" v-if="item.status === 'IN_PROGRESS' ">Đang vận chuyển</span>
+          <span class="badge bg-success" v-if="item.status === 'SUCCESS' ">Giao hàng thành công</span>
         </p>
         <p class="d-flex justify-content-between">
           <span>Trọng lượng : {{item.weight}}</span>

@@ -50,10 +50,24 @@ public class GlobalControllerAdvice {
         UserDocument user = userRepository.findByEmail(principal.getName()).orElse(null);
         assert user != null;
         Role role = user.getRoles().get(0);
-        if(employeeRepository.findByUser(user) !=null && Objects.equals(role.getName(), "ADMIN")){
+        if(employeeRepository.findByUser(user) !=null && (Objects.equals(role.getName(), "ADMIN")) ){
             Employee employee = employeeRepository.findByUser(user);
             Store store = storeRepository.findByEmployee(employee);
             return store.getAddress();
+        }
+        if(employeeRepository.findByUser(user) !=null && (Objects.equals(role.getName(), "STAFF")) ){
+            Employee employee = employeeRepository.findByUser(user);
+            for (Employee item : employeeRepository.findAll()){
+                if(item.getEmployees() != null){
+                    for(Employee employeeItem : item.getEmployees()){
+                        if(employee.equals(employeeItem)){
+                            Store store = storeRepository.findByEmployee(item);
+                            return store.getAddress();
+                        }
+                    }
+                }
+            }
+
         }
         return null;
     }
@@ -68,7 +82,7 @@ public class GlobalControllerAdvice {
             for (Role item : user.getRoles()){
                 roles.add(item.getName());
             }
-            return "Vai trò : " + roles.toString();
+            return roles.get(0);
         }
         return "";
     }

@@ -24,9 +24,9 @@ public class Driver {
     private String address;
     //giấy phép lái xe
     private String license;
-    @DBRef
+    @DBRef(lazy = true)
     private List<Shipment> shipments;
-    @DBRef
+    @DBRef(lazy = true)
     private Car car;
 //    Trạng thái hiện tại của tài xế. Có thể là ‘Available’ (sẵn sàng), ‘In Use’ (đang lái xe), hoặc‘Off Duty’ (nghỉ).
 }

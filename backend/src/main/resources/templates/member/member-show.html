@@ -1,10 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/app.html}">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Xem chi tiết khách hàng</title>
 </head>
 <body>
+<header class="pagetitle" layout:fragment="custom-header">
+    <h1 class="label">Quản lý khách hàng</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/dashboard}">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/members}">Danh sách</a></li>
+            <li class="breadcrumb-item active">Xem chi tiết khách hàng</li>
+        </ol>
+    </nav>
+</header>
+<section layout:fragment="custom-content">
 
+</section>
+<div layout:fragment="custom-javascript">
+</div>
 </body>
 </html>

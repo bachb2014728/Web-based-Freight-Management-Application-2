@@ -30,6 +30,7 @@ public class InitStoreConfig {
                         .phone("0918070411")
                         .address("Đ.30/04, xã Xuân Khánh, huyện Ninh Kiều, thành phố Cần Thơ")
                         .employee(employee)
+                        .province("Cần Thơ")
                         .build();
                 storeRepository.save(store);
             }
@@ -41,6 +42,7 @@ public class InitStoreConfig {
                         .phone("0918070411")
                         .address("Đ.Trần Duy Hưng, phường 2, quận 11, thành phố Hồ Chí Minh")
                         .employee(employee)
+                        .province("Hồ Chí Minh")
                         .build();
                 storeRepository.save(store);
             }
@@ -52,6 +54,7 @@ public class InitStoreConfig {
                         .phone("0918070411")
                         .address("Đ.Thống Nhất, xã Quan Hoa, huyện Cầu Giấy, thủ đô Hà Nội")
                         .employee(employee)
+                        .province("Hà Nội")
                         .build();
                 storeRepository.save(store);
             }
@@ -65,6 +68,7 @@ public class InitStoreConfig {
                         .phone("0918070411")
                         .address("Đ.Lý Thường Kiệt, xã Bình Thạnh, huyện Phụng Hiệp, thành phố Hậu Giang")
                         .employee(employee)
+                        .province("Hậu Giang")
                         .build();
                 storeRepository.save(store);
             }
@@ -78,6 +82,7 @@ public class InitStoreConfig {
                         .phone("0918070411")
                         .address("Đ.3/2, xã Mỹ Hòa, huyện Bình Minh, thành phố Vĩnh Long")
                         .employee(employee)
+                        .province("Vĩnh Long")
                         .build();
                 storeRepository.save(store);
             }
@@ -91,6 +96,7 @@ public class InitStoreConfig {
                         .phone("0918070411")
                         .address("Đ.Trần Quốc Toản, xã Tân Nhuận Đông, huyện Châu Thành, tỉnh Đồng Tháp")
                         .employee(employee)
+                        .province("Đồng Tháp")
                         .build();
                 storeRepository.save(store);
             }
@@ -104,6 +110,7 @@ public class InitStoreConfig {
                         .phone("0918070411")
                         .address("Đ.Yết Kiêu, xã Lương Thế Trân, huyện Cái Nước, tỉnh Cà Mau")
                         .employee(employee)
+                        .province("Cà Mau")
                         .build();
                 storeRepository.save(store);
             }
@@ -117,6 +124,7 @@ public class InitStoreConfig {
                         .phone("0918070411")
                         .address("Đ.Thống Nhất, xã Chánh Phú Hòa, huyện Bến Cát, tỉnh Bình Dương")
                         .employee(employee)
+                        .province("Bình Dương")
                         .build();
                 storeRepository.save(store);
             }

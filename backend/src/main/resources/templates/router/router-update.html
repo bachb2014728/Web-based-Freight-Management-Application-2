@@ -39,7 +39,7 @@
                     <div class="mb-3 row col-sm">
                         <label class="col-sm-2 col-form-label">Nơi bắt đầu</label>
                         <div class="col-sm-10">
-                            <select id="provincesStart" name="provincesStart" class="form-select mb-3">
+                            <select id="provincesStart" name="provincesStart" class="form-select mb-3" th:field="*{startPoint}">
                                 <option value="" selected>Chọn tỉnh thành</option>
                             </select>
                             <select id="districtsStart" name="districtsStart" class="form-select mb-3">
@@ -84,8 +84,8 @@
                         <label class="col-sm-2 col-form-label">Trạng thái</label>
                         <div class="col-sm-10">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="true" id="status">
-                                <label class="form-check-label" for="status">Active</label>
+                                <input class="form-check-input" type="checkbox" value="true" id="status" th:checked="${router.status == true}">
+                                <label class="form-check-label" for="status" >Hoạt động</label>
                             </div>
                         </div>
                     </div>

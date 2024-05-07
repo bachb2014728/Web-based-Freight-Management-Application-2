@@ -17,6 +17,10 @@ import com.dev.backend.rest.dto.LogInRequest;
 import com.dev.backend.rest.dto.SignUpRequest;
 import com.dev.backend.security.CustomUserDetails;
 import com.dev.backend.service.Authentication;
+import com.dev.backend.service.helper.ConvertAddress;
+import com.dev.backend.web.dto.location.DistrictDto;
+import com.dev.backend.web.dto.location.ProvinceDto;
+import com.dev.backend.web.dto.location.WardDto;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +40,7 @@ public class AuthenticationImpl implements Authentication {
     private final JwtService jwtService;
     private final AuthenticationManager manager;
     private final CustomerRepository customerRepository;
+    private final ConvertAddress convertAddress;
     @Override
     public CustomUserDetails signUp(SignUpRequest signUpRequest) {
         try {
@@ -65,7 +70,17 @@ public class AuthenticationImpl implements Authentication {
             role.setUsers(Collections.singletonList(user));
             roleRepository.save(role);
 
-            Customer customer = Customer.builder().user(userNew).build();
+            Customer customer = Customer.builder()
+                    .firstName(signUpRequest.getFirstName())
+                    .lastName(signUpRequest.getLastName())
+                    .address(
+                            convertAddress.getAddress(
+                                    ProvinceDto.builder().code(signUpRequest.getProvinceId()).name(signUpRequest.getProvince()).build(),
+                                    DistrictDto.builder().code(signUpRequest.getDistrictId()).name(signUpRequest.getDistrict()).build(),
+                                    WardDto.builder().code(signUpRequest.getWardId()).name(signUpRequest.getWard()).build()
+                            )
+                    )
+                    .user(userNew).build();
 
             customerRepository.save(customer);
             return new CustomUserDetails(user);

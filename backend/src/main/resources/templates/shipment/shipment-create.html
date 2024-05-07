@@ -34,7 +34,7 @@
         <div class="card-footer d-flex justify-content-between">
             <span id="quantity" th:if="${item.shipment.batches != null}" th:text="'Số lượng : ' +${item.shipment.batches.size()}"></span>
             <div>
-                <a id="addShipmentButton" th:href="@{/shipments/__${item.shipment.id}__/add}" class="btn btn-sm btn-secondary" >Tạo chuyến đi</a>
+                <a th:if="${item.shipment.batches.size() > 0}" th:href="@{/shipments/__${item.shipment.id}__/add}" class=" btn btn-sm btn-secondary" >Tạo chuyến đi</a>
                 <a th:href="@{/shipments/__${item.shipment.id}__/batch/add}" class="btn btn-sm btn-info text-light ">Thêm lô hàng</a>
             </div>
             <span th:text="'Tổng trọng lượng : '+  ${@formatUtil.calculateTotalWeight(item.shipment.batches)}"></span>
@@ -45,16 +45,21 @@
     </div>
 </section>
 <div layout:fragment="custom-javascript">
-    <script>
-        document.getElementById('addShipmentButton').addEventListener('click', function(event) {
-            var quantityText = document.getElementById('quantity').innerText;
-            var quantity = parseInt(quantityText.split(':')[1].trim());
-            if (quantity === 0) {
-                event.preventDefault();
-                alert('Không thể thêm chuyến đi vì không tồn tại bất kì lô hàng nào');
-            }
-        });
-    </script>
+<!--    <div layout:fragment="custom-javascript">-->
+<!--        <script>-->
+<!--            var addShipmentButtons = document.querySelectorAll('.addShipmentButton');-->
+<!--            addShipmentButtons.forEach(function(button) {-->
+<!--                button.addEventListener('click', function(event) {-->
+<!--                    var quantityText = button.parentElement.previousElementSibling.innerText;-->
+<!--                    var quantity = parseInt(quantityText.split(':')[1].trim());-->
+<!--                    if (quantity === 0) {-->
+<!--                        event.preventDefault();-->
+<!--                        alert('Không thể thêm chuyến đi vì không tồn tại bất kì lô hàng nào');-->
+<!--                    }-->
+<!--                });-->
+<!--            });-->
+<!--        </script>-->
+<!--    </div>-->
 </div>
 </body>
 </html>

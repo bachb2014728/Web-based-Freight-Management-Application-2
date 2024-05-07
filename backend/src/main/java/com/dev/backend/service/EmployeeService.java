@@ -9,7 +9,7 @@ import java.util.List;
 public interface EmployeeService {
     List<EmployeeDto> getEmployees(Principal principal);
 
-    void saveEmployee(CreateEmployee employee, Principal principal);
+    void saveEmployee(CreateEmployee employee, Principal principal) throws IllegalAccessException;
 
     CreateEmployee getEmployee(String id);
 

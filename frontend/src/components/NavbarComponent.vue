@@ -15,7 +15,7 @@
         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
           <li><router-link to="/merchandises" class="dropdown-item">Danh sách</router-link></li>
           <li><router-link to="/merchandises/create" class="dropdown-item">Thêm hàng hóa</router-link></li>
-          <li><router-link to="/merchandises/" class="dropdown-item">Thống kê</router-link></li>
+<!--          <li><router-link to="/merchandises/" class="dropdown-item">Thống kê</router-link></li>-->
         </ul>
       </li>
     </ul>
@@ -24,8 +24,8 @@
     <nav class="header-nav ms-auto">
       <ul class="d-flex align-items-center">
         <li class="nav-item dropdown pe-3" v-if="!auth">
-          <router-link to="/login" type="button" class="btn btn-outline-primary me-2">Login</router-link>
-          <router-link to="/register" type="button" class="btn btn-warning">Sign-up</router-link>
+          <router-link to="/login" type="button" class="btn btn-outline-primary me-2">Đăng nhập</router-link>
+          <router-link to="/register" type="button" class="btn btn-warning">Đăng kí</router-link>
         </li>
         <li class="nav-item dropdown pe-3" v-if="auth">
 

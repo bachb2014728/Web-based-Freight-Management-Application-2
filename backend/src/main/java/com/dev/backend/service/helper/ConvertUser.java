@@ -1,6 +1,7 @@
 package com.dev.backend.service.helper;
 
 import com.dev.backend.document.Image;
+import com.dev.backend.document.Role;
 import com.dev.backend.document.UserDocument;
 import com.dev.backend.jwt.JwtService;
 import com.dev.backend.repository.ImageRepository;
@@ -32,5 +33,10 @@ public class ConvertUser {
             }
         }
         return images;
+    }
+    public String getRoleFromEmail(String email){
+        UserDocument userDocument = userRepository.findByEmail(email).get();
+        Role role = userDocument.getRoles().get(0);
+        return role.getName();
     }
 }

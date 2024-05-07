@@ -1,20 +1,27 @@
 <template>
-  <main class="container">
-    <div class="pt-3">
+  <main class="row">
+    <div class="col-sm-8">
       <form @submit.prevent="submit">
         <h1 class="h3 mb-3 card-title text-center">Đăng nhập</h1>
-        <div class="form-floating form-group">
-          <input v-model="data.email" type="email" class="form-control form-control-lg" :class="{ 'is-invalid': errors.email }"  placeholder="name@example.com" @input="onChange('email')">
-          <label>Email address</label>
-          <p v-if="errors.email" class="text-danger label"> {{ errors.email }}</p>
+        <div class="mb-3">
+          <div class="form-floating form-group">
+            <input v-model="data.email" type="email" class="form-control form-control-lg" :class="{ 'is-invalid': errors.email }"  placeholder="name@example.com" @input="onChange('email')">
+            <label>Địa chỉ email</label>
+            <p v-if="errors.email" class="text-danger label"> {{ errors.email }}</p>
+          </div>
         </div>
-        <div class="form-floating form-group">
-          <input v-model="data.password" type="password" class="form-control form-control-lg" :class="{ 'is-invalid': errors.password }"  placeholder="password" @input="onChange('password')">
-          <label>Password</label>
-          <p v-if="errors.password" class="text-danger label"> {{ errors.password }}</p>
+        <div class="mb-3">
+          <div class="form-floating form-group">
+            <input v-model="data.password" type="password" class="form-control form-control-lg" :class="{ 'is-invalid': errors.password }"  placeholder="password" @input="onChange('password')">
+            <label>Mật khẩu</label>
+            <p v-if="errors.password" class="text-danger label"> {{ errors.password }}</p>
+          </div>
         </div>
         <button class="w-100 btn btn-lg btn-success" type="submit">Đăng nhập</button>
       </form>
+    </div>
+    <div class="col-sm-4">
+      <img src="../assets/images/cargo-truck.png" alt="Tra cứu vận chuyển" class="img-fluid">
     </div>
   </main>
 </template>

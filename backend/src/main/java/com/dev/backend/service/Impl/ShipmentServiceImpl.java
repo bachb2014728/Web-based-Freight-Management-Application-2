@@ -1,13 +1,7 @@
 package com.dev.backend.service.Impl;
 
-import com.dev.backend.document.Batch;
-import com.dev.backend.document.Driver;
-import com.dev.backend.document.Shipment;
-import com.dev.backend.document.Store;
-import com.dev.backend.repository.BatchRepository;
-import com.dev.backend.repository.DriverRepository;
-import com.dev.backend.repository.ShipmentRepository;
-import com.dev.backend.repository.StoreRepository;
+import com.dev.backend.document.*;
+import com.dev.backend.repository.*;
 import com.dev.backend.service.DriverService;
 import com.dev.backend.service.ShipmentService;
 import com.dev.backend.service.helper.ConvertStore;
@@ -27,6 +21,7 @@ public class ShipmentServiceImpl implements ShipmentService {
     private final ShipmentRepository shipmentRepository;
     private final BatchRepository batchRepository;
     private final DriverRepository driverRepository;
+    private final MerchandiseRepository merchandiseRepository;
     @Override
     public List<ShipmentView> get(Principal principal) {
         List<ShipmentView> shipments = new ArrayList<>();
@@ -165,12 +160,25 @@ public class ShipmentServiceImpl implements ShipmentService {
     public void update(String shipmentId, ShipmentUpdate shipment) {
         Shipment shipmentOld = shipmentRepository.findById(shipmentId).get();
         shipmentOld.setNote(shipment.getNote());
+
+        if(shipmentOld.getDriver() != shipment.getDriver()){
+
+            Driver driverOld = driverRepository.findById(shipmentOld.getDriver().getId()).get();
+            driverOld.setStatus("Available");
+            driverRepository.save(driverOld);
+
+            Driver driverNew = driverRepository.findById(shipment.getDriver().getId()).get();
+            driverNew.setStatus("In Use");
+            driverRepository.save(driverNew);
+        }
         shipmentOld.setDriver(shipment.getDriver());
         shipmentOld.setRouter(shipment.getRouter());
         shipmentOld.setReceivingStore(shipment.getReceivingStore());
         shipmentOld.setBatches(shipment.getBatches());
         shipmentOld.setTotalWeight(getTotalWeight(shipment.getBatches()));
         shipmentRepository.save(shipmentOld);
+
+
     }
 
     @Override
@@ -254,6 +262,88 @@ public class ShipmentServiceImpl implements ShipmentService {
                 .status(driver.getStatus())
                 .name(driver.getName())
                 .build();
+    }
+
+    @Override
+    public void delete(String shipmentId, Principal principal) {
+        if(shipmentRepository.existsById(shipmentId)){
+            Shipment shipment = shipmentRepository.findById(shipmentId).get();
+
+            Driver driver = shipment.getDriver();
+            driver.setStatus("Available");
+            driverRepository.save(driver);
+
+            shipmentRepository.deleteById(shipmentId);
+            return;
+        }
+        return;
+    }
+
+    @Override
+    public void accept(String shipmentId) {
+        if(shipmentRepository.existsById(shipmentId)){
+            Shipment shipment = shipmentRepository.findById(shipmentId).get();
+            shipment.setStatus("IN_PROGRESS");
+            shipmentRepository.save(shipment);
+
+            List<Batch> batches = shipment.getBatches();
+            for (Batch item : batches){
+                for (Merchandise merchandise : item.getMerchandises()){
+                    Merchandise merchandiseItem = merchandiseRepository.findById(merchandise.getId()).get();
+                    merchandiseItem.setStatus("IN_PROGRESS");
+                    merchandiseRepository.save(merchandiseItem);
+                }
+            }
+        }
+    }
+
+    @Override
+    public List<ShipmentDto> findAllHaveInProgress(Principal principal) {
+        Store store = convertStore.getStoreByEmail(principal.getName());
+        List<Shipment> shipments = shipmentRepository.findAllByStatusAndSendingStore("IN_PROGRESS",store);
+        return shipments.stream().map(this::mapShipmentToShipmentDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ShipmentDto> findAllHaveInProgressByReceiver(Principal principal) {
+        Store store = convertStore.getStoreByEmail(principal.getName());
+        List<Shipment> shipments = shipmentRepository.findAllByStatusAndReceivingStore("IN_PROGRESS", store);
+        return shipments.stream().map(this::mapShipmentToShipmentDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public void receivingAccept(String shipmentId) {
+        if(shipmentRepository.existsById(shipmentId)){
+            Shipment shipment = shipmentRepository.findById(shipmentId).get();
+            shipment.setStatus("SUCCESS");
+            shipmentRepository.save(shipment);
+
+            List<Batch> batches = shipment.getBatches();
+            for (Batch item : batches){
+                for (Merchandise merchandise : item.getMerchandises()){
+                    Merchandise merchandiseItem = merchandiseRepository.findById(merchandise.getId()).get();
+                    merchandiseItem.setStatus("SUCCESS");
+                    merchandiseRepository.save(merchandiseItem);
+                }
+            }
+            Driver driver = driverRepository.findById(shipment.getDriver().getId()).get();
+            driver.setStatus("Available");
+            driverRepository.save(driver);
+        }
+    }
+
+    @Override
+    public List<ShipmentDto> findAllHaveInSuccess(Principal principal) {
+        Store store = convertStore.getStoreByEmail(principal.getName());
+        List<Shipment> shipments = shipmentRepository.findAllByStatusAndSendingStore("SUCCESS",store);
+        return shipments.stream().map(this::mapShipmentToShipmentDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ShipmentDto> findAllHaveInSuccessByReceiver(Principal principal) {
+        Store store = convertStore.getStoreByEmail(principal.getName());
+        List<Shipment> shipments = shipmentRepository.findAllByStatusAndReceivingStore("SUCCESS", store);
+        return shipments.stream().map(this::mapShipmentToShipmentDto).collect(Collectors.toList());
     }
 
     public boolean isExistBatchInShipment(Batch batch, List<Shipment>shipments){

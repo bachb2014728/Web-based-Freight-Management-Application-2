@@ -19,26 +19,26 @@
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">Thông tin cá nhân</h5>
-            <form class="row g-3" th:action="@{/employees/__${id}__/update}" method="post">
+            <form class="row g-3" th:action="@{/employees/__${id}__/update}" method="post" th:object="${employee}">
                 <div class="row mb-3">
                     <div class="col-sm">
                         <label for="firstname" class="form-label">Họ :
                             <em th:text="${employee.firstName}"></em>
                         </label>
-                        <input type="text" class="form-control" id="firstname" name="firstName"  th:value="${employee.firstName}">
+                        <input type="text" class="form-control" id="firstname" name="firstName"  th:value="${employee.firstName}" th:field="*{firstName}">
                     </div>
                     <div class="col-sm">
                         <label for="lastname" class="form-label">
                             Tên : <em th:text="${employee.lastName}"></em>
                         </label>
-                        <input type="text" class="form-control" id="lastname" name="lastName" th:value="${employee.lastName}">
+                        <input type="text" class="form-control" id="lastname" name="lastName" th:value="${employee.lastName}" th:field="*{lastName}">
                     </div>
                     <div class="col-sm">
                         <label for="date" class="form-label">
                             Ngày sinh : <em th:text="${employee.date}"></em>
                         </label>
                         <input type="date" id="date" name="date"  class="form-control"
-                               th:value="${employee.date}" >
+                               th:value="${employee.date}" th:field="*{date}">
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -46,13 +46,13 @@
                         <label for="identifier" class="form-label">
                             Mã định danh : <em th:text="${employee.identifier}"></em>
                         </label>
-                        <input type="text" class="form-control" id="identifier" name="identifier"  th:value="${employee.identifier}">
+                        <input type="text" class="form-control" id="identifier" name="identifier"  th:value="${employee.identifier}" th:field="*{identifier}">
                     </div>
                     <div class="col-sm">
                         <label for="phone" class="form-label">
                             Số điện thoại : <em th:text="${employee.phone}"></em>
                         </label>
-                        <input type="text" class="form-control" id="phone" name="phone" th:value="${employee.phone}">
+                        <input type="text" class="form-control" id="phone" name="phone" th:value="${employee.phone}" th:field="*{phone}">
                     </div>
                     <div class="col-sm">
                         <label for="genderForm" class="form-label">Giới tính : <em th:text="${employee.gender}"></em></label>
@@ -80,24 +80,23 @@
                                 <option class="province" th:value="${employee.address.getProvince().name}" th:text="${employee.address.getProvince().name}" th:id="${employee.address.getProvince().id}" selected>Chọn tỉnh thành</option>
                             </select>
                             <select id="district" name="district" class="form-select mb-3">
-                                <option class="district" th:value="${employee.address.getDistrict().name}" th:text="${employee.address.getDistrict().name}" th:id="${employee.address.getDistrict().id}" selected>Chọn tỉnh thành</option>
+                                <option class="district" th:value="${employee.address.getDistrict().name}" th:text="${employee.address.getDistrict().name}" th:id="${employee.address.getDistrict().id}" selected>Chọn huyen</option>
                             </select>
                             <select id="ward" name="ward" class="form-select mb-3">
-                                <option class="ward" th:value="${employee.address.getWard().name}" th:text="${employee.address.getWard().name}" th:id="${employee.address.getWard().id}" selected>Chọn tỉnh thành</option>
-
+                                <option class="ward" th:value="${employee.address.getWard().name}" th:text="${employee.address.getWard().name}" th:id="${employee.address.getWard().id}" selected>Chọn xa</option>
                             </select>
                         </div>
                     </div>
                     <div class="col-sm">
                         <label for="user" class="form-label">Tài khoản : </label>
                         <div id="user">
-                            <input type="text" class="form-control mb-3" id="email" name="email" th:value="${employee.user.email}" readonly>
-                            <select class="form-select mb-3" name="role">
-                                <th:block th:each="role : ${roles}">
-                                    <option th:value="${role.id}" th:text="${role.name}" th:selected="${role.id == employee.user.roles[0].id}"></option>
+                            <input type="text" class="form-control mb-3" id="email" name="email" th:value="${employee.user.email}" disabled>
+                            <select class="form-select mb-3" name="role" th:disabled="${role != 'ADMIN'}">
+                                <th:block th:each="item : ${roles}">
+                                    <option th:value="${item.id}" th:text="${item.name}" th:selected="${item.id == employee.user.roles[0].id}"></option>
                                 </th:block>
                             </select>
-                            <div class="row mb-3 mr-2">
+                            <div class="row mb-3 mr-2" th:if="${role == 'ADMIN'}">
                                 <div class="form-check col">
                                     <input class="form-check-input" type="radio" id="gridCheck1" name="isEnabled" th:checked="${employee.user.enabled}" value="true">
                                     <label class="form-check-label" for="gridCheck1">Hoạt động</label>

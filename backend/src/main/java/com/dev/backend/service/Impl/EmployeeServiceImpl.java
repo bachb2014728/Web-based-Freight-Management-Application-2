@@ -11,7 +11,9 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,10 +33,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     public List<EmployeeDto> getEmployees(Principal principal) {
         UserDocument user = userRepository.findByEmail(principal.getName()).get();
         Employee employee = employeeRepository.findByUser(user);
-        if(employee.getEmployees() == null){
-            return null;
+        List<Employee> employees = new ArrayList<>();
+        if(employee.getEmployees() == null && user.getRoles().get(0).getName() =="STAFF"){
+            employees.add(employee);
+        }else{
+            if(employee.getEmployees() != null){
+                employees = employee.getEmployees();
+            }
         }
-        List<Employee> employees = employee.getEmployees();
+
         return employees.stream().map(this::mapEmployeeToEmployeeDto).collect(Collectors.toList());
     }
     public EmployeeDto mapEmployeeToEmployeeDto(Employee employee){
@@ -51,7 +58,15 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .build();
     }
     @Override
-    public void saveEmployee(CreateEmployee employeeNew, Principal principal) {
+    public void saveEmployee(CreateEmployee employeeNew, Principal principal) throws IllegalAccessException {
+        Field[] fields = CreateEmployee.class.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            Object value = field.get(employeeNew);
+            if (value == null) {
+                throw new IllegalArgumentException("Trường " + field.getName() + " không được để trống");
+            }
+        }
         if(employeeNew.getRole() == null){
             Role role = roleRepository.findByName("STAFF").get();
             employeeNew.setRole(role);

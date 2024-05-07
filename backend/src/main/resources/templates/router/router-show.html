@@ -67,7 +67,8 @@
                     <div class="mb-3 row col-sm">
                         <label class="col-sm-2 col-form-label">Trạng thái</label>
                         <div class="col-sm-10">
-                            <input type="number" class="form-control" id="status" name="time" th:value="${router.status}">
+                            <span th:if="${router.status == true}" class="badge bg-success">Hoạt động</span>
+                            <span th:if="${router.status == false}" class="badge bg-danger">Không hoạt động</span>
                         </div>
                     </div>
                     <div class="mb-3 row col-sm">

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/app.html}">
+<head>
+    <title>Lỗi hệ thống</title>
+</head>
+<body>
+<header class="pagetitle" layout:fragment="custom-header">
+</header>
+<section layout:fragment="custom-content">
+    <div class="container">
+        <section class="section error-404 min-vh-100 d-flex flex-column align-items-center justify-content-center">
+            <h1>404</h1>
+            <h2>Dữ liệu Nhập bị thiếu hoặc lỗi hệ thống</h2>
+            <small th:text="${message}"></small>
+            <a class="btn mt-2" th:href="@{${url}}">Quay trở lại</a>
+        </section>
+
+    </div>
+</section>
+<div layout:fragment="custom-javascript">
+</div>
+</body>
+</html>

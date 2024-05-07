@@ -1,10 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/app.html}">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Quản lý khách hàng</title>
 </head>
 <body>
-
+<header class="pagetitle" layout:fragment="custom-header">
+    <h1 class="label">Quản lý khách hàng</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/dashboard}">Trang chủ</a></li>
+            <li class="breadcrumb-item active">Danh sách</li>
+        </ol>
+    </nav>
+</header>
+<section layout:fragment="custom-content">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">
+                <span>Danh sách</span>
+            </h5>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Họ và tên</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Vai trò</th>
+                    <th scope="col">Địa chỉ</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col">Chức năng</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="employee : ${customers}">
+                    <td th:text="${employee.id}"></td>
+                    <td th:text="${employee.firstName}+' '+${employee.lastName}"></td>
+                    <td th:text="${employee.user.email}"></td>
+                    <td th:text="${employee.user.roles[0].name}"></td>
+                    <td th:text="${employee.address.toString()}"></td>
+                    <td >
+                        <span th:if="${employee.user.isEnabled()}"  class="badge text-bg-success">hoạt động</span>
+                        <span th:unless="${employee.user.isEnabled()}"  class="badge text-bg-danger">tạm khóa</span>
+                    </td>
+                    <td>
+                        <a th:href="@{'/members/'+${employee.id}}" class="btn btn-sm btn-secondary"><i class="bi bi-search"></i></a>
+                        <a th:if="${role == 'ADMIN'}" th:href="@{'/members/'+${employee.id}+'/delete'}" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+<div layout:fragment="custom-javascript">
+</div>
 </body>
 </html>

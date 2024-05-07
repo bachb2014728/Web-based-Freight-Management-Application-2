@@ -40,7 +40,10 @@
                     <td th:text="${router.endPoint}"></td>
                     <td th:text="${router.distance}"></td>
                     <td th:text="${router.time}"></td>
-                    <td th:text="${router.status}"></td>
+                    <td >
+                        <span th:if="${router.status == true}" class="badge bg-success">Hoạt động</span>
+                        <span th:if="${router.status == false}" class="badge bg-danger">Không hoạt động</span>
+                    </td>
 <!--                    <td th:text="${router.notes}"></td>-->
                     <td>
                         <a th:href="@{'/routers/'+${router.id}}" class="btn btn-sm btn-secondary"><i class="bi bi-search"></i></a>

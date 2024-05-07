@@ -21,7 +21,11 @@ public class AdminController {
     @GetMapping("/dashboard")
     public String dashboard(Model model, Principal principal){
         List<ShipmentDto> shipments = shipmentService.findAllShipmentHaveAwaitingExportAndReceiverStore(principal);
+        List<ShipmentDto> shipmentsReceiving = shipmentService.findAllHaveInProgressByReceiver(principal);
+        List<ShipmentDto> shipmentsSuccess = shipmentService.findAllHaveInSuccessByReceiver(principal);
+        shipments.addAll(shipmentsReceiving);
         model.addAttribute("shipments", shipments);
+        model.addAttribute("shipmentsSuccess",shipmentsSuccess);
         return "dashboard";
     }
 }
